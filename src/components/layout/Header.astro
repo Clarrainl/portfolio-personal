@@ -1,0 +1,99 @@
+---
+const navLinks = [
+  { href: '/proyectos', label: 'Proyectos' },
+  { href: '/sobre-mi', label: 'Sobre Mí' },
+  { href: '/cv', label: 'CV' },
+  { href: '/contacto', label: 'Contacto' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header id="site-header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+  <div class="max-w-[1280px] mx-auto px-6 lg:px-12 flex items-center justify-between h-16">
+    <!-- Logo / Name -->
+    <a href="/" class="font-display text-xl font-light tracking-widest uppercase text-current no-underline">
+      Portfolio
+    </a>
+
+    <!-- Desktop Nav -->
+    <nav class="hidden md:flex items-center gap-8">
+      {navLinks.map((link) => (
+        <a
+          href={link.href}
+          class:list={[
+            'nav-link text-sm font-medium tracking-wide transition-colors duration-200',
+            currentPath.startsWith(link.href) ? 'active' : '',
+          ]}
+        >
+          {link.label}
+        </a>
+      ))}
+    </nav>
+
+    <!-- Mobile hamburger -->
+    <button
+      id="mobile-menu-btn"
+      class="md:hidden flex flex-col gap-[5px] p-2"
+      aria-label="Abrir menú"
+      aria-expanded="false"
+    >
+      <span class="block w-6 h-px bg-current transition-all duration-300"></span>
+      <span class="block w-6 h-px bg-current transition-all duration-300"></span>
+      <span class="block w-4 h-px bg-current transition-all duration-300"></span>
+    </button>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div
+    id="mobile-menu"
+    class="hidden md:hidden border-t border-[var(--color-border)] bg-[var(--color-background)]"
+  >
+    <nav class="flex flex-col px-6 py-4 gap-4">
+      {navLinks.map((link) => (
+        <a
+          href={link.href}
+          class:list={[
+            'text-sm font-medium tracking-wide py-2 transition-colors duration-200',
+            currentPath.startsWith(link.href) ? 'text-[var(--color-accent)]' : '',
+          ]}
+        >
+          {link.label}
+        </a>
+      ))}
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.getElementById('site-header');
+  const mobileBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  // Scroll behavior: transparent on top, white + blur when scrolled
+  function updateHeader() {
+    const isHome = window.location.pathname === '/';
+    if (isHome && window.scrollY < 80) {
+      header?.classList.add('text-white');
+      header?.classList.remove('bg-white/95', 'backdrop-blur-sm', 'border-b', 'border-[var(--color-border)]');
+    } else {
+      header?.classList.remove('text-white');
+      header?.classList.add('bg-white/95', 'backdrop-blur-sm', 'border-b', 'border-[var(--color-border)]');
+    }
+  }
+
+  window.addEventListener('scroll', updateHeader);
+  updateHeader();
+
+  // Mobile menu toggle
+  mobileBtn?.addEventListener('click', () => {
+    const isOpen = mobileMenu?.classList.contains('hidden') === false;
+    mobileMenu?.classList.toggle('hidden');
+    mobileBtn.setAttribute('aria-expanded', String(!isOpen));
+  });
+
+  // Re-run on navigation
+  document.addEventListener('astro:page-load', () => {
+    updateHeader();
+  });
+</script>

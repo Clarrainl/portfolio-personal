@@ -1,0 +1,145 @@
+---
+import BaseLayout from '../../components/layout/BaseLayout.astro';
+import MediaGallery from '../../components/ui/MediaGallery.tsx';
+import { getProjects, getProjectBySlug, urlFor } from '../../lib/sanity.js';
+import { PortableText } from '@portabletext/react';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project) => ({
+    params: { slug: project.slug.current },
+  }));
+}
+
+const { slug } = Astro.params;
+const project = await getProjectBySlug(slug!);
+
+if (!project) {
+  return Astro.redirect('/404');
+}
+
+const categoryLabels: Record<string, string> = {
+  arquitectura: 'Arquitectura',
+  robotica: 'Robótica',
+  impresion3d: 'Impresión 3D',
+};
+
+const ogImage = project.coverImage
+  ? urlFor(project.coverImage).width(1200).height(630).fit('crop').url()
+  : undefined;
+---
+
+<BaseLayout
+  title={project.title}
+  description={project.shortDescription}
+  ogImage={ogImage}
+>
+  <div class="pt-16">
+    <!-- Project Header -->
+    <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-16 border-b border-[var(--color-border)]">
+      <div class="flex items-center gap-3 mb-6">
+        <span class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase">
+          {categoryLabels[project.category] || project.category}
+        </span>
+        <span class="w-px h-3 bg-[var(--color-border)]"></span>
+        <span class="text-xs text-[var(--color-text-secondary)]">{project.year}</span>
+      </div>
+      <h1 class="font-display text-5xl md:text-7xl font-light leading-none">{project.title}</h1>
+    </div>
+
+    <!-- Cover image -->
+    {project.coverImage && (
+      <div class="max-w-[1280px] mx-auto px-6 lg:px-12 pt-12">
+        <div class="aspect-[16/9] overflow-hidden">
+          <img
+            src={urlFor(project.coverImage).width(1280).height(720).fit('crop').url()}
+            alt={project.coverImage.alt || project.title}
+            class="w-full h-full object-cover"
+          />
+        </div>
+      </div>
+    )}
+
+    <!-- Gallery -->
+    {project.gallery && project.gallery.length > 0 && (
+      <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-12">
+        <MediaGallery items={project.gallery} client:load />
+      </div>
+    )}
+
+    <!-- Description & Meta -->
+    <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-12">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <!-- Description -->
+        <div class="lg:col-span-2">
+          {project.description && project.description.length > 0 && (
+            <div class="prose prose-lg max-w-none text-[var(--color-text)] leading-relaxed">
+              <PortableText value={project.description} />
+            </div>
+          )}
+        </div>
+
+        <!-- Meta sidebar -->
+        <div class="lg:col-span-1">
+          <div class="border-t border-[var(--color-border)] pt-6 space-y-6">
+            <div>
+              <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.2em] uppercase mb-2">Categoría</p>
+              <p class="text-sm font-medium">{categoryLabels[project.category] || project.category}</p>
+            </div>
+            <div>
+              <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.2em] uppercase mb-2">Año</p>
+              <p class="text-sm font-medium">{project.year}</p>
+            </div>
+            {project.tags && project.tags.length > 0 && (
+              <div>
+                <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.2em] uppercase mb-3">Tecnologías</p>
+                <div class="flex flex-wrap gap-2">
+                  {project.tags.map((tag) => (
+                    <span class="text-xs px-3 py-1 border border-[var(--color-border)] text-[var(--color-text-secondary)]">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Back button -->
+    <div class="max-w-[1280px] mx-auto px-6 lg:px-12 pb-16 border-t border-[var(--color-border)] pt-8">
+      <a
+        href="/proyectos"
+        class="inline-flex items-center gap-2 text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors duration-200"
+      >
+        ← Volver a proyectos
+      </a>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .prose h2 {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 300;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+  .prose h3 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .prose p {
+    margin-bottom: 1rem;
+    color: var(--color-text-secondary);
+    line-height: 1.75;
+  }
+  .prose strong {
+    color: var(--color-text);
+    font-weight: 500;
+  }
+</style>

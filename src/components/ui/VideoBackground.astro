@@ -1,0 +1,30 @@
+---
+interface Props {
+  webm?: string;
+  mp4?: string;
+  poster?: string;
+}
+
+const { webm, mp4, poster } = Astro.props;
+---
+
+<div class="absolute inset-0 overflow-hidden">
+  {(webm || mp4) ? (
+    <video
+      autoplay
+      muted
+      loop
+      playsinline
+      poster={poster}
+      class="absolute inset-0 w-full h-full object-cover"
+    >
+      {webm && <source src={webm} type="video/webm" />}
+      {mp4 && <source src={mp4} type="video/mp4" />}
+    </video>
+  ) : (
+    <!-- Placeholder gradient when no video is provided -->
+    <div class="absolute inset-0 bg-gradient-to-br from-[#1a1a1a] via-[#2d2d2d] to-[#0a0a0a]"></div>
+  )}
+  <!-- Dark overlay -->
+  <div class="absolute inset-0 bg-black/45"></div>
+</div>

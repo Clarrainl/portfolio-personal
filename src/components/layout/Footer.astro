@@ -1,0 +1,40 @@
+---
+const currentYear = new Date().getFullYear();
+
+const socialLinks = [
+  { label: 'LinkedIn', href: 'https://linkedin.com' },
+  { label: 'Instagram', href: 'https://instagram.com' },
+];
+---
+
+<footer class="border-t border-[var(--color-border)] bg-[var(--color-surface)] mt-24">
+  <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-12">
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <!-- Name & Year -->
+      <div>
+        <p class="font-display text-lg font-light tracking-widest uppercase">Portfolio</p>
+        <p class="text-sm text-[var(--color-text-secondary)] mt-1">© {currentYear}</p>
+      </div>
+
+      <!-- Links -->
+      <div class="flex flex-col md:flex-row gap-4 md:gap-8">
+        {socialLinks.map((link) => (
+          <a
+            href={link.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors duration-200"
+          >
+            {link.label}
+          </a>
+        ))}
+        <a
+          href="/contacto"
+          class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors duration-200"
+        >
+          Contacto
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>

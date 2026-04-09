@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../components/layout/BaseLayout.astro';
+import AboutContent from '../components/sections/AboutContent.astro';
+import { getAbout } from '../lib/sanity.js';
+
+const about = await getAbout();
+---
+
+<BaseLayout
+  title="Sobre Mí"
+  description="Arquitecto con Máster en Robótica y Construcción Avanzada y Postgrado en Impresión 3D a escala 1:1."
+>
+  <div class="pt-24">
+    <!-- Page Header -->
+    <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-16 border-b border-[var(--color-border)]">
+      <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-4">Perfil</p>
+      <h1 class="font-display text-6xl font-light">Sobre Mí</h1>
+    </div>
+
+    {about ? (
+      <AboutContent about={about} />
+    ) : (
+      <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-24 text-center">
+        <p class="text-[var(--color-text-secondary)]">
+          El contenido de esta sección se gestiona desde Sanity Studio.
+          <br />
+          Agrega un documento "Sobre Mí" desde el panel de administración.
+        </p>
+      </div>
+    )}
+  </div>
+</BaseLayout>

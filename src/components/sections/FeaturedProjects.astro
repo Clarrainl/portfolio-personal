@@ -1,0 +1,39 @@
+---
+import { getFeaturedProjects } from '../../lib/sanity.js';
+import ProjectCard from '../ui/ProjectCard.astro';
+
+const projects = await getFeaturedProjects();
+---
+
+{projects.length > 0 && (
+  <section class="py-24 px-6 lg:px-12 max-w-[1280px] mx-auto fade-in-section">
+    <div class="flex items-end justify-between mb-12">
+      <div>
+        <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-3">Trabajo reciente</p>
+        <h2 class="font-display text-4xl font-light">Proyectos Destacados</h2>
+      </div>
+      <a
+        href="/proyectos"
+        class="hidden md:inline-flex items-center gap-2 text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors duration-200"
+      >
+        Ver todos
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {projects.map((project) => (
+        <ProjectCard project={project} />
+      ))}
+    </div>
+
+    <div class="mt-10 text-center md:hidden">
+      <a
+        href="/proyectos"
+        class="inline-flex items-center gap-2 text-sm font-medium border border-[var(--color-border)] px-6 py-3 hover:bg-[var(--color-surface)] transition-colors duration-200"
+      >
+        Ver todos los proyectos →
+      </a>
+    </div>
+  </section>
+)}

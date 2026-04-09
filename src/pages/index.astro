@@ -1,0 +1,70 @@
+---
+import BaseLayout from '../components/layout/BaseLayout.astro';
+import Hero from '../components/sections/Hero.astro';
+import FeaturedProjects from '../components/sections/FeaturedProjects.astro';
+---
+
+<BaseLayout
+  title="Inicio"
+  description="Portfolio de Arquitecto con Máster en Robótica y Construcción Avanzada y Postgrado en Impresión 3D."
+>
+  <!-- Hero -->
+  <Hero
+    name="Portfolio"
+    tagline="Arquitecto · Robótica · Impresión 3D"
+  />
+
+  <!-- Featured Projects -->
+  <FeaturedProjects />
+
+  <!-- Mini About -->
+  <section class="py-24 px-6 lg:px-12 max-w-[1280px] mx-auto fade-in-section">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+      <div>
+        <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-4">Sobre mí</p>
+        <h2 class="font-display text-4xl font-light mb-6">
+          Arquitecto con visión técnica y creativa
+        </h2>
+        <p class="text-[var(--color-text-secondary)] leading-relaxed mb-8">
+          Combino arquitectura, robótica e impresión 3D para explorar los límites de la
+          construcción contemporánea. Máster en Robótica y Construcción Avanzada,
+          Postgrado en Impresión 3D a escala 1:1.
+        </p>
+        <a
+          href="/sobre-mi"
+          class="inline-flex items-center gap-2 text-sm font-medium tracking-wide border-b border-[var(--color-text)] pb-0.5 hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors duration-200"
+        >
+          Conocer más →
+        </a>
+      </div>
+
+      <div class="relative">
+        <div class="aspect-[3/4] bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center">
+          <p class="text-sm text-[var(--color-text-secondary)]">Foto profesional</p>
+        </div>
+        <!-- Decorative accent line -->
+        <div class="absolute -left-4 top-8 bottom-8 w-px bg-[var(--color-accent)]"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact CTA -->
+  <section class="py-24 px-6 bg-[var(--color-surface)] fade-in-section">
+    <div class="max-w-[1280px] mx-auto text-center">
+      <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-4">¿Hablamos?</p>
+      <h2 class="font-display text-5xl font-light mb-6">
+        Trabajemos juntos
+      </h2>
+      <p class="text-[var(--color-text-secondary)] max-w-lg mx-auto mb-10">
+        ¿Tienes un proyecto en mente o quieres conocer más sobre mi trabajo?
+        Estoy disponible para nuevas oportunidades.
+      </p>
+      <a
+        href="/contacto"
+        class="inline-block bg-[var(--color-text)] text-white text-sm font-medium tracking-[0.2em] uppercase px-10 py-4 transition-all duration-300 hover:bg-[var(--color-accent-dark)]"
+      >
+        Contactar
+      </a>
+    </div>
+  </section>
+</BaseLayout>

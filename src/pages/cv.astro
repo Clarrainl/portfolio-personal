@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../components/layout/BaseLayout.astro';
+import CVContent from '../components/sections/CVContent.astro';
+import { getCV } from '../lib/sanity.js';
+
+const cv = await getCV();
+---
+
+<BaseLayout
+  title="CV"
+  description="Curriculum Vitae — Arquitecto, Robótica, Impresión 3D."
+>
+  <div class="pt-24">
+    <!-- Page Header -->
+    <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-16 border-b border-[var(--color-border)]">
+      <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-4">Experiencia</p>
+      <h1 class="font-display text-6xl font-light">CV</h1>
+    </div>
+
+    {cv ? (
+      <CVContent cv={cv} />
+    ) : (
+      <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-24">
+        <div class="text-center mb-12">
+          <p class="text-[var(--color-text-secondary)] mb-6">
+            El CV se gestiona desde Sanity Studio.
+            Agrega un documento "CV" desde el panel de administración.
+          </p>
+          <a
+            href="/cv/cv.pdf"
+            download
+            class="inline-flex items-center gap-3 border border-[var(--color-text)] text-sm font-medium px-6 py-3 hover:bg-[var(--color-text)] hover:text-white transition-all duration-200"
+          >
+            Descargar CV (PDF)
+          </a>
+        </div>
+      </div>
+    )}
+  </div>
+</BaseLayout>

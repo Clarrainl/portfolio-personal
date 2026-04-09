@@ -1,0 +1,62 @@
+---
+import type { CV } from '../../types/index.js';
+
+interface Props {
+  cv: CV;
+}
+
+const { cv } = Astro.props;
+---
+
+<div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-12">
+  <!-- CV Header with download -->
+  <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-12 border-b border-[var(--color-border)]">
+    <div>
+      <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-2">Curriculum Vitae</p>
+      {cv.lastUpdated && (
+        <p class="text-xs text-[var(--color-text-secondary)]">
+          Actualizado: {new Date(cv.lastUpdated).toLocaleDateString('es-ES', { year: 'numeric', month: 'long' })}
+        </p>
+      )}
+    </div>
+    <a
+      href="/cv/cv.pdf"
+      download
+      class="inline-flex items-center gap-3 border border-[var(--color-text)] text-sm font-medium tracking-wide px-6 py-3 hover:bg-[var(--color-text)] hover:text-white transition-all duration-200"
+    >
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 1v10M4 7l4 4 4-4M2 14h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Descargar CV (PDF)
+    </a>
+  </div>
+
+  <!-- Sections -->
+  <div class="divide-y divide-[var(--color-border)]">
+    {cv.sections.map((section) => (
+      <section class="py-12 fade-in-section">
+        <h2 class="font-display text-3xl font-light mb-8">{section.title}</h2>
+        <div class="space-y-8">
+          {section.items.map((item) => (
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-8">
+              <!-- Period -->
+              <div class="md:col-span-1">
+                <p class="text-xs text-[var(--color-text-secondary)] tracking-wide">{item.period}</p>
+              </div>
+              <!-- Content -->
+              <div class="md:col-span-3">
+                <h3 class="text-base font-medium text-[var(--color-text)]">{item.role}</h3>
+                <p class="text-sm text-[var(--color-accent-dark)] mt-0.5">{item.place}</p>
+                {item.description && (
+                  <p class="text-sm text-[var(--color-text-secondary)] mt-2 leading-relaxed">
+                    {item.description}
+                  </p>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    ))}
+  </div>
+</div>
