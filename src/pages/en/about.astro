@@ -1,0 +1,93 @@
+---
+import BaseLayout from '../../components/layout/BaseLayout.astro';
+import { getAbout, urlFor } from '../../lib/sanity.js';
+import { t } from '../../lib/i18n.js';
+import { PortableText } from '@portabletext/react';
+
+const lang = 'en';
+const about = await getAbout();
+const photoUrl = about?.photo ? urlFor(about.photo).width(800).height(1000).fit('crop').url() : null;
+---
+
+<BaseLayout title="About Me" description="Architect with a Master's in Robotics and Advanced Construction and a Postgraduate in 1:1 Scale 3D Printing.">
+  <div class="pt-24">
+    <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-16 border-b border-[var(--color-border)]">
+      <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-4">{t(lang, 'about.label')}</p>
+      <h1 class="font-display text-6xl font-light">{t(lang, 'about.title')}</h1>
+    </div>
+
+    {about ? (
+      <>
+        <section class="max-w-[1280px] mx-auto px-6 lg:px-12 py-16 fade-in-section">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+            <div class="relative order-2 lg:order-1">
+              <div class="aspect-[3/4] overflow-hidden bg-[var(--color-surface)] border border-[var(--color-border)]">
+                {photoUrl ? (
+                  <img src={photoUrl} alt="Profile photo" class="w-full h-full object-cover" />
+                ) : (
+                  <div class="w-full h-full flex items-center justify-center">
+                    <p class="text-sm text-[var(--color-text-secondary)]">Professional photo</p>
+                  </div>
+                )}
+              </div>
+              <div class="absolute -left-4 top-8 bottom-8 w-px bg-[var(--color-accent)]"></div>
+            </div>
+            <div class="order-1 lg:order-2">
+              <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-4">{t(lang, 'about.label')}</p>
+              {(about.bioEn || about.bio) ? (
+                <div class="prose-about">
+                  <PortableText value={(about.bioEn || about.bio)!} />
+                </div>
+              ) : (
+                <p class="text-[var(--color-text-secondary)]">Bio pending in Sanity Studio.</p>
+              )}
+              {about.socialLinks && about.socialLinks.length > 0 && (
+                <div class="flex flex-wrap gap-4 mt-8">
+                  {about.socialLinks.map((link) => (
+                    <a href={link.url} target="_blank" rel="noopener noreferrer" class="text-sm font-medium border-b border-[var(--color-border)] pb-0.5 hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors duration-200">
+                      {link.platform}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {about.education && about.education.length > 0 && (
+          <section class="max-w-[1280px] mx-auto px-6 lg:px-12 py-16 border-t border-[var(--color-border)] fade-in-section">
+            <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-12">{t(lang, 'about.education')}</p>
+            <div class="relative pl-8 border-l border-[var(--color-border)]">
+              {about.education.map((item, i) => (
+                <div class:list={['relative pb-12', i === about.education.length - 1 ? 'pb-0' : '']}>
+                  <div class="absolute -left-[1.35rem] top-1 w-2.5 h-2.5 bg-[var(--color-accent)]"></div>
+                  <span class="text-xs text-[var(--color-text-secondary)] tracking-wider">{item.year}</span>
+                  <h3 class="font-display text-2xl font-light mt-1 mb-1">{item.degreeEn || item.degree}</h3>
+                  <p class="text-sm font-medium text-[var(--color-text-secondary)]">{item.institution}</p>
+                  {(item.descriptionEn || item.description) && (
+                    <p class="text-sm text-[var(--color-text-secondary)] mt-2 leading-relaxed max-w-2xl">{item.descriptionEn || item.description}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {about.skills && about.skills.length > 0 && (
+          <section class="max-w-[1280px] mx-auto px-6 lg:px-12 py-16 border-t border-[var(--color-border)] fade-in-section">
+            <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-8">{t(lang, 'about.skills')}</p>
+            <div class="flex flex-wrap gap-2">
+              {about.skills.map((skill) => (
+                <span class="text-sm px-4 py-2 border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:border-[var(--color-accent)] hover:text-[var(--color-text)] transition-colors duration-200">{skill}</span>
+              ))}
+            </div>
+          </section>
+        )}
+      </>
+    ) : (
+      <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-24 text-center">
+        <p class="text-[var(--color-text-secondary)]">{t(lang, 'about.empty')}</p>
+      </div>
+    )}
+  </div>
+</BaseLayout>

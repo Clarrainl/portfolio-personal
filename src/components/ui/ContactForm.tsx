@@ -3,17 +3,20 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
-const schema = z.object({
-  name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
-  email: z.string().email('Introduce un email válido'),
-  message: z.string().min(10, 'El mensaje debe tener al menos 10 caracteres'),
-  company: z.string().optional(),
-  website: z.string().optional(), // honeypot
-});
+function makeSchema(lang: 'es' | 'en') {
+  return z.object({
+    name: z.string().min(2, lang === 'en' ? 'Name must be at least 2 characters' : 'El nombre debe tener al menos 2 caracteres'),
+    email: z.string().email(lang === 'en' ? 'Enter a valid email' : 'Introduce un email válido'),
+    message: z.string().min(10, lang === 'en' ? 'Message must be at least 10 characters' : 'El mensaje debe tener al menos 10 caracteres'),
+    company: z.string().optional(),
+    website: z.string().optional(), // honeypot
+  });
+}
 
-type FormData = z.infer<typeof schema>;
+type FormData = z.infer<ReturnType<typeof makeSchema>>;
 
-export default function ContactForm() {
+export default function ContactForm({ lang = 'es' }: { lang?: 'es' | 'en' }) {
+  const schema = makeSchema(lang);
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -23,8 +26,23 @@ export default function ContactForm() {
     reset,
     formState: { errors },
   } = useForm<FormData>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(makeSchema(lang)),
   });
+
+  const labels = {
+    name: lang === 'en' ? 'Name' : 'Nombre',
+    company: lang === 'en' ? 'Company' : 'Empresa',
+    companyOptional: lang === 'en' ? '(optional)' : '(opcional)',
+    email: 'Email',
+    message: lang === 'en' ? 'Message' : 'Mensaje',
+    namePlaceholder: lang === 'en' ? 'Your name' : 'Tu nombre',
+    companyPlaceholder: lang === 'en' ? 'Your company or studio' : 'Tu empresa o estudio',
+    emailPlaceholder: lang === 'en' ? 'you@email.com' : 'tu@email.com',
+    messagePlaceholder: lang === 'en' ? 'Tell me about your project or inquiry...' : 'Cuéntame sobre tu proyecto o consulta...',
+    submit: lang === 'en' ? 'Send message' : 'Enviar mensaje',
+    sending: lang === 'en' ? 'Sending...' : 'Enviando...',
+    success: lang === 'en' ? 'Message sent! I will get back to you as soon as possible.' : '¡Mensaje enviado! Te responderé lo antes posible.',
+  };
 
   async function onSubmit(data: FormData) {
     setStatus('loading');
@@ -66,7 +84,7 @@ export default function ContactForm() {
       {/* Name */}
       <div>
         <label htmlFor="name" className="block text-sm font-medium mb-2 text-[#0A0A0A]">
-          Nombre <span className="text-[#D94F4F]">*</span>
+          {labels.name} <span className="text-[#D94F4F]">*</span>
         </label>
         <input
           id="name"
@@ -77,7 +95,7 @@ export default function ContactForm() {
             'focus:border-[#0A0A0A] placeholder:text-[#6B6B6B]/50',
             errors.name ? 'border-[#D94F4F]' : 'border-[#E5E2DD]',
           ].join(' ')}
-          placeholder="Tu nombre"
+          placeholder={labels.namePlaceholder}
           {...register('name')}
         />
         {errors.name && (
@@ -88,14 +106,14 @@ export default function ContactForm() {
       {/* Company (optional) */}
       <div>
         <label htmlFor="company" className="block text-sm font-medium mb-2 text-[#0A0A0A]">
-          Empresa <span className="text-[#6B6B6B] font-normal">(opcional)</span>
+          {labels.company} <span className="text-[#6B6B6B] font-normal">{labels.companyOptional}</span>
         </label>
         <input
           id="company"
           type="text"
           autoComplete="organization"
           className="w-full px-4 py-3 border border-[#E5E2DD] text-sm bg-transparent outline-none transition-colors duration-200 focus:border-[#0A0A0A] placeholder:text-[#6B6B6B]/50"
-          placeholder="Tu empresa o estudio"
+          placeholder={labels.companyPlaceholder}
           {...register('company')}
         />
       </div>
@@ -103,7 +121,7 @@ export default function ContactForm() {
       {/* Email */}
       <div>
         <label htmlFor="email" className="block text-sm font-medium mb-2 text-[#0A0A0A]">
-          Email <span className="text-[#D94F4F]">*</span>
+          {labels.email} <span className="text-[#D94F4F]">*</span>
         </label>
         <input
           id="email"
@@ -114,7 +132,7 @@ export default function ContactForm() {
             'focus:border-[#0A0A0A] placeholder:text-[#6B6B6B]/50',
             errors.email ? 'border-[#D94F4F]' : 'border-[#E5E2DD]',
           ].join(' ')}
-          placeholder="tu@email.com"
+          placeholder={labels.emailPlaceholder}
           {...register('email')}
         />
         {errors.email && (
@@ -125,7 +143,7 @@ export default function ContactForm() {
       {/* Message */}
       <div>
         <label htmlFor="message" className="block text-sm font-medium mb-2 text-[#0A0A0A]">
-          Mensaje <span className="text-[#D94F4F]">*</span>
+          {labels.message} <span className="text-[#D94F4F]">*</span>
         </label>
         <textarea
           id="message"
@@ -135,7 +153,7 @@ export default function ContactForm() {
             'focus:border-[#0A0A0A] placeholder:text-[#6B6B6B]/50',
             errors.message ? 'border-[#D94F4F]' : 'border-[#E5E2DD]',
           ].join(' ')}
-          placeholder="Cuéntame sobre tu proyecto o consulta..."
+          placeholder={labels.messagePlaceholder}
           {...register('message')}
         />
         {errors.message && (
@@ -153,7 +171,7 @@ export default function ContactForm() {
       {/* Success message */}
       {status === 'success' && (
         <div className="text-sm text-[#4F9D69] bg-green-50 px-4 py-3 border border-[#4F9D69]/20">
-          ¡Mensaje enviado! Te responderé lo antes posible.
+          {labels.success}
         </div>
       )}
 
@@ -168,7 +186,7 @@ export default function ContactForm() {
             : 'bg-[#0A0A0A] text-white hover:bg-[#8B7355]',
         ].join(' ')}
       >
-        {status === 'loading' ? 'Enviando...' : 'Enviar mensaje'}
+        {status === 'loading' ? labels.sending : labels.submit}
       </button>
     </form>
   );

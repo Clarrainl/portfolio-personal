@@ -1,70 +1,55 @@
 ---
 import { urlFor } from '../../lib/sanity.js';
-import type { Project } from '../../types/index.js';
+import { t } from '../../lib/i18n.js';
+import type { Project, Lang } from '../../types/index.js';
 
 interface Props {
-  project: Pick<Project, '_id' | 'title' | 'slug' | 'category' | 'year' | 'shortDescription' | 'coverImage' | 'tags'>;
+  project: Pick<Project, '_id' | 'title' | 'titleEn' | 'slug' | 'category' | 'year' | 'shortDescription' | 'shortDescriptionEn' | 'coverImage' | 'tags'>;
+  lang?: Lang;
 }
 
-const { project } = Astro.props;
+const { project, lang = 'es' } = Astro.props;
 
 const categoryLabels: Record<string, string> = {
-  arquitectura: 'Arquitectura',
-  robotica: 'Robótica',
-  impresion3d: 'Impresión 3D',
+  arquitectura: t(lang, 'filter.arquitectura'),
+  robotica: t(lang, 'filter.robotica'),
+  impresion3d: t(lang, 'filter.impresion3d'),
 };
+
+const title = (lang === 'en' && project.titleEn) ? project.titleEn : project.title;
+const shortDesc = (lang === 'en' && project.shortDescriptionEn) ? project.shortDescriptionEn : project.shortDescription;
+const href = lang === 'es' ? `/proyectos/${project.slug.current}` : `/en/projects/${project.slug.current}`;
 
 const imageUrl = project.coverImage
   ? urlFor(project.coverImage).width(800).height(600).fit('crop').url()
   : null;
 ---
 
-<a
-  href={`/proyectos/${project.slug.current}`}
-  class="group block overflow-hidden border border-[var(--color-border)] transition-all duration-300"
->
-  <!-- Image container with overlay -->
+<a href={href} class="group block overflow-hidden border border-[var(--color-border)] transition-all duration-300">
   <div class="relative aspect-[4/3] overflow-hidden bg-[var(--color-surface)]">
     {imageUrl ? (
-      <img
-        src={imageUrl}
-        alt={project.coverImage?.alt || project.title}
-        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-        loading="lazy"
-        decoding="async"
-      />
+      <img src={imageUrl} alt={project.coverImage?.alt || title} class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" loading="lazy" decoding="async" />
     ) : (
       <div class="w-full h-full bg-[var(--color-surface)] flex items-center justify-center">
         <span class="text-[var(--color-text-secondary)] text-sm">Sin imagen</span>
       </div>
     )}
-
-    <!-- Hover overlay -->
     <div class="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all duration-300 flex items-end p-5">
       <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-2 group-hover:translate-y-0">
-        <p class="text-white/70 text-xs tracking-widest uppercase mb-1">
-          {categoryLabels[project.category] || project.category}
-        </p>
-        <p class="text-white font-display text-xl font-light">{project.title}</p>
+        <p class="text-white/70 text-xs tracking-widest uppercase mb-1">{categoryLabels[project.category] || project.category}</p>
+        <p class="text-white font-display text-xl font-light">{title}</p>
       </div>
     </div>
   </div>
 
-  <!-- Card info (below image) -->
   <div class="p-4 bg-[var(--color-background)]">
     <div class="flex items-start justify-between gap-2">
-      <h3 class="font-sans text-base font-medium text-[var(--color-text)] leading-tight">
-        {project.title}
-      </h3>
+      <h3 class="font-sans text-base font-medium text-[var(--color-text)] leading-tight">{title}</h3>
       <span class="text-xs text-[var(--color-text-secondary)] shrink-0">{project.year}</span>
     </div>
-    <p class="text-xs text-[var(--color-text-secondary)] mt-1 tracking-wider uppercase">
-      {categoryLabels[project.category] || project.category}
-    </p>
-    {project.shortDescription && (
-      <p class="text-sm text-[var(--color-text-secondary)] mt-2 line-clamp-2">
-        {project.shortDescription}
-      </p>
+    <p class="text-xs text-[var(--color-text-secondary)] mt-1 tracking-wider uppercase">{categoryLabels[project.category] || project.category}</p>
+    {shortDesc && (
+      <p class="text-sm text-[var(--color-text-secondary)] mt-2 line-clamp-2">{shortDesc}</p>
     )}
   </div>
 </a>

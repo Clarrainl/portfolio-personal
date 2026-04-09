@@ -1,62 +1,82 @@
 ---
-const navLinks = [
-  { href: '/proyectos', label: 'Proyectos' },
-  { href: '/sobre-mi', label: 'Sobre Mí' },
-  { href: '/cv', label: 'CV' },
-  { href: '/contacto', label: 'Contacto' },
-];
+import { t, getAlternatePath, getLangFromPath } from '../../lib/i18n.js';
+import type { Lang } from '../../types/index.js';
 
 const currentPath = Astro.url.pathname;
+const lang: Lang = getLangFromPath(currentPath);
+const alternateLang: Lang = lang === 'es' ? 'en' : 'es';
+const alternatePath = getAlternatePath(currentPath, alternateLang);
+
+const navLinks = [
+  { href: lang === 'es' ? '/proyectos' : '/en/projects', label: t(lang, 'nav.projects') },
+  { href: lang === 'es' ? '/sobre-mi' : '/en/about',     label: t(lang, 'nav.about') },
+  { href: lang === 'es' ? '/cv' : '/en/cv',              label: t(lang, 'nav.cv') },
+  { href: lang === 'es' ? '/contacto' : '/en/contact',   label: t(lang, 'nav.contact') },
+];
 ---
 
-<header id="site-header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
-  <div class="max-w-[1280px] mx-auto px-6 lg:px-12 flex items-center justify-between h-16">
-    <!-- Logo / Name -->
-    <a href="/" class="font-display text-xl font-light tracking-widest uppercase text-current no-underline">
-      Portfolio
+<header id="site-header" class="fixed top-0 left-0 right-0 z-50 pointer-events-none">
+  <div class="flex flex-col items-center pt-5">
+    <!-- Name -->
+    <a href={lang === 'es' ? '/' : '/en'} class="pointer-events-auto font-display text-xl font-light tracking-widest text-white no-underline drop-shadow-sm" style="margin-bottom: 1rem;">
+      Charlie Larraín L.
     </a>
 
-    <!-- Desktop Nav -->
-    <nav class="hidden md:flex items-center gap-8">
-      {navLinks.map((link) => (
-        <a
-          href={link.href}
-          class:list={[
-            'nav-link text-sm font-medium tracking-wide transition-colors duration-200',
-            currentPath.startsWith(link.href) ? 'active' : '',
-          ]}
-        >
-          {link.label}
-        </a>
-      ))}
-    </nav>
+    <!-- Desktop Nav pill + lang switcher -->
+    <div class="pointer-events-auto hidden md:flex items-center gap-4">
+      <nav class="flex items-center gap-[3rem] rounded-full border border-white/15 bg-black/30 backdrop-blur-xl" style="padding: 0.85rem 3rem;">
+        {navLinks.map((link) => (
+          <a
+            href={link.href}
+            class:list={[
+              'text-sm font-medium tracking-wide text-white/80 hover:text-white transition-colors duration-200 leading-none',
+              currentPath === link.href || currentPath.startsWith(link.href + '/') ? 'text-white' : '',
+            ]}
+          >
+            {link.label}
+          </a>
+        ))}
+      </nav>
 
-    <!-- Mobile hamburger -->
-    <button
-      id="mobile-menu-btn"
-      class="md:hidden flex flex-col gap-[5px] p-2"
-      aria-label="Abrir menú"
-      aria-expanded="false"
-    >
-      <span class="block w-6 h-px bg-current transition-all duration-300"></span>
-      <span class="block w-6 h-px bg-current transition-all duration-300"></span>
-      <span class="block w-4 h-px bg-current transition-all duration-300"></span>
-    </button>
+      <!-- Language switcher -->
+      <a
+        href={alternatePath}
+        class="text-xs font-medium tracking-widest text-white/70 hover:text-white transition-colors duration-200 border border-white/20 rounded-full px-3 py-1.5 bg-black/20 backdrop-blur-xl"
+      >
+        {alternateLang.toUpperCase()}
+      </a>
+    </div>
+  </div>
+
+  <!-- Mobile layout -->
+  <div class="md:hidden flex items-center justify-between px-6 py-3 pointer-events-auto">
+    <a href={lang === 'es' ? '/' : '/en'} class="font-display text-xl font-light tracking-widest text-white no-underline">
+      Charlie Larraín L.
+    </a>
+    <div class="flex items-center gap-3">
+      <a href={alternatePath} class="text-xs font-medium text-white/70 border border-white/20 rounded-full px-2.5 py-1">
+        {alternateLang.toUpperCase()}
+      </a>
+      <button
+        id="mobile-menu-btn"
+        class="flex flex-col gap-[5px] p-2"
+        aria-label="Abrir menú"
+        aria-expanded="false"
+      >
+        <span class="block w-6 h-px bg-current transition-all duration-300 text-white"></span>
+        <span class="block w-6 h-px bg-white transition-all duration-300"></span>
+        <span class="block w-4 h-px bg-white transition-all duration-300"></span>
+      </button>
+    </div>
   </div>
 
   <!-- Mobile Menu -->
-  <div
-    id="mobile-menu"
-    class="hidden md:hidden border-t border-[var(--color-border)] bg-[var(--color-background)]"
-  >
+  <div id="mobile-menu" class="hidden md:hidden border-t border-white/10 bg-black/40 backdrop-blur-xl pointer-events-auto">
     <nav class="flex flex-col px-6 py-4 gap-4">
       {navLinks.map((link) => (
         <a
           href={link.href}
-          class:list={[
-            'text-sm font-medium tracking-wide py-2 transition-colors duration-200',
-            currentPath.startsWith(link.href) ? 'text-[var(--color-accent)]' : '',
-          ]}
+          class="text-sm font-medium tracking-wide py-2 text-white/80 hover:text-white transition-colors duration-200"
         >
           {link.label}
         </a>
@@ -66,34 +86,12 @@ const currentPath = Astro.url.pathname;
 </header>
 
 <script>
-  const header = document.getElementById('site-header');
   const mobileBtn = document.getElementById('mobile-menu-btn');
   const mobileMenu = document.getElementById('mobile-menu');
 
-  // Scroll behavior: transparent on top, white + blur when scrolled
-  function updateHeader() {
-    const isHome = window.location.pathname === '/';
-    if (isHome && window.scrollY < 80) {
-      header?.classList.add('text-white');
-      header?.classList.remove('bg-white/95', 'backdrop-blur-sm', 'border-b', 'border-[var(--color-border)]');
-    } else {
-      header?.classList.remove('text-white');
-      header?.classList.add('bg-white/95', 'backdrop-blur-sm', 'border-b', 'border-[var(--color-border)]');
-    }
-  }
-
-  window.addEventListener('scroll', updateHeader);
-  updateHeader();
-
-  // Mobile menu toggle
   mobileBtn?.addEventListener('click', () => {
-    const isOpen = mobileMenu?.classList.contains('hidden') === false;
+    const isOpen = !mobileMenu?.classList.contains('hidden');
     mobileMenu?.classList.toggle('hidden');
     mobileBtn.setAttribute('aria-expanded', String(!isOpen));
-  });
-
-  // Re-run on navigation
-  document.addEventListener('astro:page-load', () => {
-    updateHeader();
   });
 </script>

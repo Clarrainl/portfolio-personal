@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../../../components/layout/BaseLayout.astro';
+import CategoryFilter from '../../../components/ui/CategoryFilter.tsx';
+import { getProjects } from '../../../lib/sanity.js';
+import { t } from '../../../lib/i18n.js';
+
+const lang = 'en';
+const projects = await getProjects();
+---
+
+<BaseLayout title="Projects" description="Full gallery of architecture, robotics and 3D printing projects.">
+  <div class="pt-24">
+    <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-16 border-b border-[var(--color-border)]">
+      <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-4">{t(lang, 'projects.label')}</p>
+      <h1 class="font-display text-6xl font-light">{t(lang, 'projects.title')}</h1>
+    </div>
+    <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-16">
+      <CategoryFilter projects={projects} lang={lang} client:load />
+    </div>
+  </div>
+</BaseLayout>

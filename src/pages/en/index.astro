@@ -1,25 +1,15 @@
 ---
-import BaseLayout from '../components/layout/BaseLayout.astro';
-import Hero from '../components/sections/Hero.astro';
-import FeaturedProjects from '../components/sections/FeaturedProjects.astro';
-import { t } from '../lib/i18n.js';
+import BaseLayout from '../../components/layout/BaseLayout.astro';
+import Hero from '../../components/sections/Hero.astro';
+import FeaturedProjects from '../../components/sections/FeaturedProjects.astro';
+import { t } from '../../lib/i18n.js';
 
-const lang = 'es';
+const lang = 'en';
 ---
 
-<BaseLayout
-  title="Inicio"
-  description="Portfolio de Arquitecto con Máster en Robótica y Construcción Avanzada y Postgrado en Impresión 3D."
->
-  <!-- Hero -->
-  <Hero
-    name="Charlie Larraín L."
-    tagline={t(lang, 'hero.tagline')}
-    ctaText={t(lang, 'hero.cta')}
-    ctaHref="/proyectos"
-  />
+<BaseLayout title="Home" description="Portfolio of an Architect with a Master's in Robotics and Advanced Construction and a Postgraduate in 1:1 Scale 3D Printing.">
+  <Hero name="Charlie Larraín L." tagline={t(lang, 'hero.tagline')} ctaText={t(lang, 'hero.cta')} ctaHref="/en/projects" />
 
-  <!-- Featured Projects -->
   <FeaturedProjects lang={lang} />
 
   <!-- Mini About -->
@@ -29,33 +19,26 @@ const lang = 'es';
         <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-4">{t(lang, 'home.about.label')}</p>
         <h2 class="font-display text-4xl font-light mb-6">{t(lang, 'home.about.title')}</h2>
         <p class="text-[var(--color-text-secondary)] leading-relaxed mb-8">{t(lang, 'home.about.body')}</p>
-        <a
-          href="/sobre-mi"
-          class="inline-flex items-center gap-2 text-sm font-medium tracking-wide border-b border-[var(--color-text)] pb-0.5 hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors duration-200"
-        >
+        <a href="/en/about" class="inline-flex items-center gap-2 text-sm font-medium tracking-wide border-b border-[var(--color-text)] pb-0.5 hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors duration-200">
           {t(lang, 'home.about.link')}
         </a>
       </div>
-
       <div class="relative">
         <div class="aspect-[3/4] bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center">
-          <p class="text-sm text-[var(--color-text-secondary)]">Foto profesional</p>
+          <p class="text-sm text-[var(--color-text-secondary)]">Professional photo</p>
         </div>
         <div class="absolute -left-4 top-8 bottom-8 w-px bg-[var(--color-accent)]"></div>
       </div>
     </div>
   </section>
 
-  <!-- Contact CTA -->
+  <!-- CTA -->
   <section class="py-24 px-6 bg-[var(--color-surface)] fade-in-section">
     <div class="max-w-[1280px] mx-auto text-center">
       <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-4">{t(lang, 'home.cta.label')}</p>
       <h2 class="font-display text-5xl font-light mb-6">{t(lang, 'home.cta.title')}</h2>
       <p class="text-[var(--color-text-secondary)] max-w-lg mx-auto mb-10">{t(lang, 'home.cta.body')}</p>
-      <a
-        href="/contacto"
-        class="inline-block bg-[var(--color-text)] text-white text-sm font-medium tracking-[0.2em] uppercase px-10 py-4 transition-all duration-300 hover:bg-[var(--color-accent-dark)]"
-      >
+      <a href="/en/contact" class="inline-block bg-[var(--color-text)] text-white text-sm font-medium tracking-[0.2em] uppercase px-10 py-4 transition-all duration-300 hover:bg-[var(--color-accent-dark)]">
         {t(lang, 'home.cta.button')}
       </a>
     </div>

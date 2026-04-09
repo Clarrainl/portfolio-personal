@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../../components/layout/BaseLayout.astro';
+import ContactForm from '../../components/ui/ContactForm.tsx';
+import { t } from '../../lib/i18n.js';
+
+const lang = 'en';
+---
+
+<BaseLayout
+  title="Contact"
+  description="Get in touch — available for projects, collaborations and opportunities."
+>
+  <div class="pt-24">
+    <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-16 border-b border-[var(--color-border)]">
+      <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-4">{t(lang, 'contact.label')}</p>
+      <h1 class="font-display text-6xl font-light">{t(lang, 'contact.title')}</h1>
+    </div>
+
+    <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-16">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+        <div>
+          <p class="text-[var(--color-text-secondary)] mb-10 leading-relaxed">
+            {t(lang, 'contact.intro')}
+          </p>
+          <ContactForm client:load lang={lang} />
+        </div>
+
+        <div class="lg:pt-4">
+          <div class="space-y-8 border-l border-[var(--color-border)] pl-8">
+            <div>
+              <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-3">Email</p>
+              <a
+                href="mailto:clarrainlihn@gmail.com"
+                class="text-sm font-medium hover:text-[var(--color-accent)] transition-colors duration-200"
+              >
+                clarrainlihn@gmail.com
+              </a>
+            </div>
+
+            <div>
+              <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-3">{t(lang, 'contact.availLabel')}</p>
+              <p class="text-sm text-[var(--color-text-secondary)]">
+                {t(lang, 'contact.availability')}
+              </p>
+            </div>
+
+            <div>
+              <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-3">{t(lang, 'contact.socialLabel')}</p>
+              <div class="flex flex-col gap-2">
+                <a
+                  href="https://linkedin.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors duration-200"
+                >
+                  LinkedIn →
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

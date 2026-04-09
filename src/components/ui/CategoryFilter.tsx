@@ -1,15 +1,23 @@
 import { useState } from 'react';
-import type { Project } from '../../types/index.js';
+import type { Project, Lang } from '../../types/index.js';
 
 interface Props {
-  projects: Pick<Project, '_id' | 'title' | 'slug' | 'category' | 'year' | 'shortDescription' | 'coverImage' | 'tags'>[];
+  projects: Pick<Project, '_id' | 'title' | 'titleEn' | 'slug' | 'category' | 'year' | 'shortDescription' | 'shortDescriptionEn' | 'coverImage' | 'tags'>[];
+  lang?: Lang;
 }
 
-const categoryLabels: Record<string, string> = {
+const categoryLabelsEs: Record<string, string> = {
   all: 'Todos',
   arquitectura: 'Arquitectura',
   robotica: 'Robótica',
   impresion3d: 'Impresión 3D',
+};
+
+const categoryLabelsEn: Record<string, string> = {
+  all: 'All',
+  arquitectura: 'Architecture',
+  robotica: 'Robotics',
+  impresion3d: '3D Printing',
 };
 
 function buildImageUrl(coverImage: Project['coverImage'] | undefined): string | null {
@@ -22,10 +30,11 @@ function buildImageUrl(coverImage: Project['coverImage'] | undefined): string | 
   return `https://cdn.sanity.io/images/zoh6ht03/production/${id}.${ext}?w=800&h=600&fit=crop`;
 }
 
-export default function CategoryFilter({ projects }: Props) {
+export default function CategoryFilter({ projects, lang = 'es' }: Props) {
   const [active, setActive] = useState('all');
   const [animating, setAnimating] = useState(false);
 
+  const categoryLabels = lang === 'en' ? categoryLabelsEn : categoryLabelsEs;
   const categories = ['all', ...Array.from(new Set(projects.map((p) => p.category)))];
 
   const filtered = active === 'all' ? projects : projects.filter((p) => p.category === active);
@@ -68,11 +77,14 @@ export default function CategoryFilter({ projects }: Props) {
       >
         {filtered.map((project) => {
           const imageUrl = buildImageUrl(project.coverImage);
+          const title = (lang === 'en' && project.titleEn) ? project.titleEn : project.title;
+          const shortDesc = (lang === 'en' && project.shortDescriptionEn) ? project.shortDescriptionEn : project.shortDescription;
+          const href = lang === 'en' ? `/en/projects/${project.slug.current}` : `/proyectos/${project.slug.current}`;
 
           return (
             <a
               key={project._id}
-              href={`/proyectos/${project.slug.current}`}
+              href={href}
               className="group block overflow-hidden border border-[#E5E2DD] transition-all duration-300"
             >
               {/* Image */}
@@ -80,13 +92,13 @@ export default function CategoryFilter({ projects }: Props) {
                 {imageUrl ? (
                   <img
                     src={imageUrl}
-                    alt={project.title}
+                    alt={title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                     loading="lazy"
                   />
                 ) : (
                   <div className="w-full h-full bg-[#F8F7F5] flex items-center justify-center">
-                    <span className="text-[#6B6B6B] text-sm">Sin imagen</span>
+                    <span className="text-[#6B6B6B] text-sm">{lang === 'en' ? 'No image' : 'Sin imagen'}</span>
                   </div>
                 )}
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all duration-300 flex items-end p-5">
@@ -94,7 +106,7 @@ export default function CategoryFilter({ projects }: Props) {
                     <p className="text-white/70 text-xs tracking-widest uppercase mb-1">
                       {categoryLabels[project.category] || project.category}
                     </p>
-                    <p className="text-white font-serif text-xl font-light">{project.title}</p>
+                    <p className="text-white font-serif text-xl font-light">{title}</p>
                   </div>
                 </div>
               </div>
@@ -102,14 +114,14 @@ export default function CategoryFilter({ projects }: Props) {
               {/* Info */}
               <div className="p-4 bg-white">
                 <div className="flex items-start justify-between gap-2">
-                  <h3 className="text-base font-medium text-[#0A0A0A] leading-tight">{project.title}</h3>
+                  <h3 className="text-base font-medium text-[#0A0A0A] leading-tight">{title}</h3>
                   <span className="text-xs text-[#6B6B6B] shrink-0">{project.year}</span>
                 </div>
                 <p className="text-xs text-[#6B6B6B] mt-1 tracking-wider uppercase">
                   {categoryLabels[project.category] || project.category}
                 </p>
-                {project.shortDescription && (
-                  <p className="text-sm text-[#6B6B6B] mt-2 line-clamp-2">{project.shortDescription}</p>
+                {shortDesc && (
+                  <p className="text-sm text-[#6B6B6B] mt-2 line-clamp-2">{shortDesc}</p>
                 )}
               </div>
             </a>
@@ -119,7 +131,7 @@ export default function CategoryFilter({ projects }: Props) {
 
       {filtered.length === 0 && (
         <div className="text-center py-20 text-[#6B6B6B]">
-          <p className="text-lg font-light">No hay proyectos en esta categoría aún.</p>
+          <p className="text-lg font-light">{lang === 'en' ? 'No projects in this category yet.' : 'No hay proyectos en esta categoría aún.'}</p>
         </div>
       )}
     </div>

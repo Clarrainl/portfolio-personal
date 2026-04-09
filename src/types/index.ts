@@ -1,20 +1,15 @@
+export type Lang = 'es' | 'en';
+
 export interface SanityImageAsset {
   _type: 'image';
-  asset: {
-    _ref: string;
-    _type: 'reference';
-  };
+  asset: { _ref: string; _type: 'reference' };
   alt?: string;
   caption?: string;
 }
 
 export interface SanityVideoAsset {
   _type: 'file';
-  asset: {
-    _ref: string;
-    _type: 'reference';
-    url: string;
-  };
+  asset: { _ref: string; _type: 'reference'; url: string };
   caption?: string;
 }
 
@@ -25,11 +20,14 @@ export type GalleryItem =
 export interface Project {
   _id: string;
   title: string;
+  titleEn?: string;
   slug: { current: string };
   category: 'arquitectura' | 'robotica' | 'impresion3d';
   year: number;
   shortDescription: string;
+  shortDescriptionEn?: string;
   description: PortableTextBlock[];
+  descriptionEn?: PortableTextBlock[];
   coverImage: SanityImageAsset;
   gallery: GalleryItem[];
   featured: boolean;
@@ -39,9 +37,11 @@ export interface Project {
 export interface Education {
   _key: string;
   degree: string;
+  degreeEn?: string;
   institution: string;
   year: number;
   description?: string;
+  descriptionEn?: string;
 }
 
 export interface SocialLink {
@@ -53,6 +53,7 @@ export interface SocialLink {
 export interface About {
   _id: string;
   bio: PortableTextBlock[];
+  bioEn?: PortableTextBlock[];
   photo: SanityImageAsset;
   education: Education[];
   skills: string[];
@@ -79,7 +80,6 @@ export interface CV {
   lastUpdated: string;
 }
 
-// Portable Text block type (simplified)
 export type PortableTextBlock = {
   _type: string;
   _key: string;

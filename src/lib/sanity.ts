@@ -25,15 +25,9 @@ export async function sanityFetch<T>(query: string, params?: Record<string, unkn
 export async function getProjects(): Promise<Project[]> {
   return sanityFetch<Project[]>(`
     *[_type == "project"] | order(year desc) {
-      _id,
-      title,
-      slug,
-      category,
-      year,
-      shortDescription,
-      coverImage,
-      featured,
-      tags
+      _id, title, titleEn, slug, category, year,
+      shortDescription, shortDescriptionEn,
+      coverImage, featured, tags
     }
   `);
 }
@@ -41,14 +35,9 @@ export async function getProjects(): Promise<Project[]> {
 export async function getFeaturedProjects(): Promise<Project[]> {
   return sanityFetch<Project[]>(`
     *[_type == "project" && featured == true] | order(year desc) [0...3] {
-      _id,
-      title,
-      slug,
-      category,
-      year,
-      shortDescription,
-      coverImage,
-      tags
+      _id, title, titleEn, slug, category, year,
+      shortDescription, shortDescriptionEn,
+      coverImage, tags
     }
   `);
 }
@@ -56,17 +45,10 @@ export async function getFeaturedProjects(): Promise<Project[]> {
 export async function getProjectBySlug(slug: string): Promise<Project | null> {
   return sanityFetch<Project | null>(`
     *[_type == "project" && slug.current == $slug][0] {
-      _id,
-      title,
-      slug,
-      category,
-      year,
-      shortDescription,
-      description,
-      coverImage,
-      gallery,
-      featured,
-      tags
+      _id, title, titleEn, slug, category, year,
+      shortDescription, shortDescriptionEn,
+      description, descriptionEn,
+      coverImage, gallery, featured, tags
     }
   `, { slug });
 }
@@ -74,12 +56,7 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
 export async function getAbout(): Promise<About | null> {
   return sanityFetch<About | null>(`
     *[_type == "about"][0] {
-      _id,
-      bio,
-      photo,
-      education,
-      skills,
-      socialLinks
+      _id, bio, bioEn, photo, education, skills, socialLinks
     }
   `);
 }
@@ -87,9 +64,7 @@ export async function getAbout(): Promise<About | null> {
 export async function getCV(): Promise<CV | null> {
   return sanityFetch<CV | null>(`
     *[_type == "cv"][0] {
-      _id,
-      sections,
-      lastUpdated
+      _id, sections, lastUpdated
     }
   `);
 }
