@@ -8,37 +8,46 @@ const lang = 'en';
 ---
 
 <BaseLayout title="Home" description="Portfolio of an Architect with a Master's in Robotics and Advanced Construction and a Postgraduate in 1:1 Scale 3D Printing.">
-  <Hero name="Charlie Larraín L." tagline={t(lang, 'hero.tagline')} ctaText={t(lang, 'hero.cta')} ctaHref="/en/projects" />
+  <Hero name="PORTFOLIO" tagline={t(lang, 'hero.tagline')} ctaText={t(lang, 'hero.cta')} ctaHref="/en/projects" lang={lang} />
 
   <FeaturedProjects lang={lang} />
 
   <!-- Mini About -->
-  <section class="py-24 px-6 lg:px-12 max-w-[1280px] mx-auto fade-in-section">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-      <div>
+  <section class="fade-in-section bg-white flex items-center" style="min-height: 100vh; width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw;">
+    <div class="px-6 w-full" style="max-width: 56rem; margin: 0 auto;">
+    <div class="flex flex-col md:flex-row items-stretch gap-0">
+      <div class="flex-1 flex flex-col justify-center" style="padding-right: 4rem;">
         <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-4">{t(lang, 'home.about.label')}</p>
         <h2 class="font-display text-4xl font-light mb-6">{t(lang, 'home.about.title')}</h2>
         <p class="text-[var(--color-text-secondary)] leading-relaxed mb-8">{t(lang, 'home.about.body')}</p>
-        <a href="/en/about" class="inline-flex items-center gap-2 text-sm font-medium tracking-wide border-b border-[var(--color-text)] pb-0.5 hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors duration-200">
+        <a href="/en/projects" class="inline-flex items-center gap-2 text-sm font-medium tracking-wide border-b border-[var(--color-text)] pb-0.5 hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors duration-200">
           {t(lang, 'home.about.link')}
         </a>
       </div>
-      <div class="relative">
-        <div class="aspect-[3/4] bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center">
+      <div class="hidden md:flex w-px self-stretch items-stretch" style="padding-top: 3rem; padding-bottom: 3rem;">
+        <div class="w-px flex-1 bg-[var(--color-accent)]"></div>
+      </div>
+      <div class="flex-1 flex items-center" style="padding-left: 4rem; padding-top: 2rem; padding-bottom: 2rem;">
+        <div class="w-full aspect-[3/4] bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center">
           <p class="text-sm text-[var(--color-text-secondary)]">Professional photo</p>
         </div>
-        <div class="absolute -left-4 top-8 bottom-8 w-px bg-[var(--color-accent)]"></div>
       </div>
+    </div>
     </div>
   </section>
 
   <!-- CTA -->
-  <section class="py-24 px-6 bg-[var(--color-surface)] fade-in-section">
-    <div class="max-w-[1280px] mx-auto text-center">
-      <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-4">{t(lang, 'home.cta.label')}</p>
-      <h2 class="font-display text-5xl font-light mb-6">{t(lang, 'home.cta.title')}</h2>
-      <p class="text-[var(--color-text-secondary)] max-w-lg mx-auto mb-10">{t(lang, 'home.cta.body')}</p>
-      <a href="/en/contact" class="inline-block bg-[var(--color-text)] text-white text-sm font-medium tracking-[0.2em] uppercase px-10 py-4 transition-all duration-300 hover:bg-[var(--color-accent-dark)]">
+  <section class="bg-[var(--color-surface)] fade-in-section" style="width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; padding-top: 2rem; padding-bottom: 2rem;">
+    <div class="text-center px-6" style="max-width: 56rem; margin: 0 auto;">
+      <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-6">{t(lang, 'home.cta.label')}</p>
+      <h2 class="font-display text-5xl font-light mb-8">{t(lang, 'home.cta.title')}</h2>
+      <p class="text-[var(--color-text-secondary)]" style="margin-bottom: 0.25rem; max-width: 32rem; margin-left: auto; margin-right: auto; text-align: center;">{t(lang, 'home.cta.body')}</p>
+      <p class="text-[var(--color-text-secondary)]" style="margin-bottom: 1.5rem; max-width: 32rem; margin-left: auto; margin-right: auto; text-align: center;">{t(lang, 'home.cta.body2')}</p>
+      <a
+        href="/en/contact"
+        class="inline-block rounded-full border border-[var(--color-border)] text-[var(--color-text)] text-sm font-medium tracking-wide transition-colors duration-200 hover:bg-[var(--color-text)] hover:text-white hover:border-[var(--color-text)]"
+        style="padding: 0.85rem 3rem;"
+      >
         {t(lang, 'home.cta.button')}
       </a>
     </div>

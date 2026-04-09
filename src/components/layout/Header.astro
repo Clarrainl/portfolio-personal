@@ -8,22 +8,18 @@ const alternateLang: Lang = lang === 'es' ? 'en' : 'es';
 const alternatePath = getAlternatePath(currentPath, alternateLang);
 
 const navLinks = [
+  { href: lang === 'es' ? '/' : '/en',                   label: t(lang, 'nav.home') },
   { href: lang === 'es' ? '/proyectos' : '/en/projects', label: t(lang, 'nav.projects') },
-  { href: lang === 'es' ? '/sobre-mi' : '/en/about',     label: t(lang, 'nav.about') },
   { href: lang === 'es' ? '/cv' : '/en/cv',              label: t(lang, 'nav.cv') },
   { href: lang === 'es' ? '/contacto' : '/en/contact',   label: t(lang, 'nav.contact') },
 ];
 ---
 
 <header id="site-header" class="fixed top-0 left-0 right-0 z-50 pointer-events-none">
-  <div class="flex flex-col items-center pt-5">
-    <!-- Name -->
-    <a href={lang === 'es' ? '/' : '/en'} class="pointer-events-auto font-display text-xl font-light tracking-widest text-white no-underline drop-shadow-sm" style="margin-bottom: 1rem;">
-      Charlie Larraín L.
-    </a>
 
-    <!-- Desktop Nav pill + lang switcher -->
-    <div class="pointer-events-auto hidden md:flex items-center gap-4">
+  <!-- Desktop: pill always fixed at top -->
+  <div class="hidden md:flex flex-col items-center" style="padding-top: 1rem;">
+    <div class="pointer-events-auto flex items-center gap-4">
       <nav class="flex items-center gap-[3rem] rounded-full border border-white/15 bg-black/30 backdrop-blur-xl" style="padding: 0.85rem 3rem;">
         {navLinks.map((link) => (
           <a
@@ -37,14 +33,33 @@ const navLinks = [
           </a>
         ))}
       </nav>
-
       <!-- Language switcher -->
-      <a
-        href={alternatePath}
-        class="text-xs font-medium tracking-widest text-white/70 hover:text-white transition-colors duration-200 border border-white/20 rounded-full px-3 py-1.5 bg-black/20 backdrop-blur-xl"
-      >
-        {alternateLang.toUpperCase()}
-      </a>
+      <div class="relative" id="lang-dropdown-wrapper">
+        <button
+          id="lang-btn"
+          aria-haspopup="true"
+          aria-expanded="false"
+          class="text-xs font-medium tracking-wide text-white/70 hover:text-white transition-colors duration-200 rounded-full border border-white/15 bg-black/30 backdrop-blur-xl flex items-center gap-1"
+          style="padding: 0.35rem 0.75rem;"
+        >
+          {lang.toUpperCase()}
+          <svg width="8" height="5" viewBox="0 0 8 5" fill="none" xmlns="http://www.w3.org/2000/svg" class="opacity-60">
+            <path d="M1 1l3 3 3-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div id="lang-menu" class="absolute top-full mt-1 left-0 right-0 rounded-full border border-white/15 bg-black/30 backdrop-blur-xl overflow-hidden hidden flex-col">
+          <a
+            href={lang === 'es' ? '#' : getAlternatePath(currentPath, 'es')}
+            class:list={['flex items-center justify-center text-xs font-medium tracking-wide transition-colors duration-150', lang === 'es' ? 'text-white cursor-default' : 'text-white/50 hover:text-white']}
+            style="padding: 0.35rem 0.75rem;"
+          >ES</a>
+          <a
+            href={lang === 'en' ? '#' : getAlternatePath(currentPath, 'en')}
+            class:list={['flex items-center justify-center text-xs font-medium tracking-wide transition-colors duration-150', lang === 'en' ? 'text-white cursor-default' : 'text-white/50 hover:text-white']}
+            style="padding: 0.35rem 0.75rem;"
+          >EN</a>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -54,8 +69,8 @@ const navLinks = [
       Charlie Larraín L.
     </a>
     <div class="flex items-center gap-3">
-      <a href={alternatePath} class="text-xs font-medium text-white/70 border border-white/20 rounded-full px-2.5 py-1">
-        {alternateLang.toUpperCase()}
+      <a href={alternatePath} class="text-xs font-medium text-white/70 border border-white/20 rounded-full px-2.5 py-1 hover:text-white transition-colors duration-200">
+        {lang.toUpperCase()} / {alternateLang.toUpperCase()}
       </a>
       <button
         id="mobile-menu-btn"
@@ -83,15 +98,49 @@ const navLinks = [
       ))}
     </nav>
   </div>
+
 </header>
 
 <script>
-  const mobileBtn = document.getElementById('mobile-menu-btn');
-  const mobileMenu = document.getElementById('mobile-menu');
+  let headerController: AbortController | null = null;
 
-  mobileBtn?.addEventListener('click', () => {
-    const isOpen = !mobileMenu?.classList.contains('hidden');
-    mobileMenu?.classList.toggle('hidden');
-    mobileBtn.setAttribute('aria-expanded', String(!isOpen));
-  });
+  function initHeader() {
+    headerController?.abort();
+    headerController = new AbortController();
+    const signal = headerController.signal;
+
+    const mobileBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    mobileBtn?.addEventListener('click', () => {
+      const isOpen = !mobileMenu?.classList.contains('hidden');
+      mobileMenu?.classList.toggle('hidden');
+      mobileBtn.setAttribute('aria-expanded', String(!isOpen));
+    }, { signal });
+
+    const langBtn = document.getElementById('lang-btn');
+    const langMenu = document.getElementById('lang-menu');
+
+    langBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = langMenu?.classList.contains('flex');
+      if (isOpen) {
+        langMenu?.classList.remove('flex');
+        langMenu?.classList.add('hidden');
+      } else {
+        langMenu?.classList.remove('hidden');
+        langMenu?.classList.add('flex');
+      }
+      langBtn.setAttribute('aria-expanded', String(!isOpen));
+    }, { signal });
+
+    document.addEventListener('click', () => {
+      langMenu?.classList.remove('flex');
+      langMenu?.classList.add('hidden');
+      langBtn?.setAttribute('aria-expanded', 'false');
+    }, { signal });
+  }
+
+  initHeader();
+  document.addEventListener('astro:page-load', initHeader);
 </script>

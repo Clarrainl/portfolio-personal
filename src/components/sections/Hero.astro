@@ -1,42 +1,55 @@
 ---
 import VideoBackground from '../ui/VideoBackground.astro';
+import type { Lang } from '../../types/index.js';
 
 interface Props {
   name?: string;
   tagline?: string;
   ctaText?: string;
   ctaHref?: string;
+  lang?: Lang;
 }
 
 const {
-  name = 'Charlie Larraín L.',
-  tagline = 'Arquitecto · Robótica · Impresión 3D',
+  name = 'PORTAFOLIO',
+  tagline = 'Arquitectura · Robótica · Impresión 3D',
   ctaText = 'Ver Proyectos',
   ctaHref = '/proyectos',
+  lang = 'es',
 } = Astro.props;
 ---
 
 <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
   <VideoBackground />
 
+  <!-- Name scrolls with the hero, positioned below the fixed pill -->
+  <a
+    href={lang === 'es' ? '/' : '/en'}
+    class="absolute hidden md:block font-display text-xl font-light tracking-widest text-white no-underline drop-shadow-sm"
+    style="top: 5.5rem; left: 50%; transform: translateX(-50%); white-space: nowrap; z-index: 40;"
+  >
+    Charlie Larraín L.
+  </a>
+
   <div class="relative z-10 text-center text-white px-6 max-w-4xl mx-auto">
-    <p class="text-sm font-medium tracking-[0.3em] uppercase text-white/60 mb-6">
+    <p class="text-sm font-medium tracking-[0.3em] uppercase text-white/60" style="margin-bottom: 2.5rem;">
       {tagline}
     </p>
-    <h1 class="font-display font-light text-[clamp(4rem,10vw,9rem)] leading-none tracking-wide mb-8">
+    <h1 class="font-display font-light text-[clamp(4rem,10vw,9rem)] leading-none tracking-wide" style="margin-bottom: 0.5rem;">
       {name}
     </h1>
-    <div class="w-16 h-px bg-[var(--color-accent)] mx-auto mb-8"></div>
+    <div class="w-16 h-px bg-[var(--color-accent)] mx-auto" style="margin-bottom: 2.5rem;"></div>
     <a
       href={ctaHref}
-      class="inline-block border border-white/50 text-white text-sm font-medium tracking-[0.2em] uppercase px-8 py-4 transition-all duration-300 hover:bg-white hover:text-[var(--color-text)]"
+      class="inline-block rounded-full border border-white/15 bg-black/30 backdrop-blur-xl text-white/80 text-sm font-medium tracking-wide transition-colors duration-200 hover:text-white"
+      style="padding: 0.85rem 3rem;"
     >
       {ctaText}
     </a>
   </div>
 
   <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40">
-    <span class="text-xs tracking-widest uppercase">Scroll</span>
+    <span class="text-xs tracking-widest uppercase">{lang === 'en' ? 'Scroll to know more about me' : 'Scroll para saber más de mí'}</span>
     <div class="w-px h-12 bg-white/20 relative overflow-hidden">
       <div class="absolute top-0 left-0 w-full bg-white/60 h-1/2 animate-[scroll-line_2s_ease-in-out_infinite]"></div>
     </div>

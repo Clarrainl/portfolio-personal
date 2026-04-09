@@ -8,16 +8,16 @@ const socialLinks = [
 ---
 
 <footer class="border-t border-[var(--color-border)] bg-[var(--color-surface)] mt-24">
-  <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-12">
-    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+  <div class="py-12" style="padding-left: 3rem; padding-right: 3rem;">
+    <div class="flex items-center justify-between">
       <!-- Name & Year -->
       <div>
         <p class="font-display text-lg font-light tracking-widest uppercase">Portfolio</p>
         <p class="text-sm text-[var(--color-text-secondary)] mt-1">© {currentYear}</p>
       </div>
 
-      <!-- Links -->
-      <div class="flex flex-col md:flex-row gap-4 md:gap-8">
+      <!-- Links — right aligned -->
+      <div class="flex items-center gap-8">
         {socialLinks.map((link) => (
           <a
             href={link.href}
