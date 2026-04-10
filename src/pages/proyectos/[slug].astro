@@ -3,6 +3,7 @@ import BaseLayout from '../../components/layout/BaseLayout.astro';
 import MediaGallery from '../../components/ui/MediaGallery.tsx';
 import { getProjects, getProjectBySlug, urlFor } from '../../lib/sanity.js';
 import { PortableText } from '@portabletext/react';
+import { portableTextComponents } from '../../components/ui/PortableTextComponents.tsx';
 
 export async function getStaticPaths() {
   const projects = await getProjects();
@@ -74,7 +75,7 @@ const ogImage = project.coverImage
         <div class="lg:col-span-2">
           {project.description && project.description.length > 0 && (
             <div class="prose prose-lg max-w-none text-[var(--color-text)] leading-relaxed">
-              <PortableText value={project.description} />
+              <PortableText value={project.description} components={portableTextComponents} />
             </div>
           )}
         </div>

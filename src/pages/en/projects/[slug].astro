@@ -4,6 +4,7 @@ import MediaGallery from '../../../components/ui/MediaGallery.tsx';
 import { getProjects, getProjectBySlug, urlFor } from '../../../lib/sanity.js';
 import { t } from '../../../lib/i18n.js';
 import { PortableText } from '@portabletext/react';
+import { portableTextComponents } from '../../../components/ui/PortableTextComponents.tsx';
 
 const lang = 'en';
 
@@ -59,7 +60,7 @@ const ogImage = project.coverImage ? urlFor(project.coverImage).width(1200).heig
         <div class="lg:col-span-2">
           {description && description.length > 0 && (
             <div class="prose prose-lg max-w-none">
-              <PortableText value={description} />
+              <PortableText value={description} components={portableTextComponents} />
             </div>
           )}
         </div>

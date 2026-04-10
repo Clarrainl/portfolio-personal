@@ -20,6 +20,9 @@ importers:
       sanity:
         specifier: ^3.67.1
         version: 3.99.0(@emotion/is-prop-valid@1.4.0)(@types/node@25.5.2)(@types/react@18.3.28)(immer@10.2.0)(jiti@2.6.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(typescript@5.9.3)(yaml@2.8.3)
+      styled-components:
+        specifier: ^6.4.0
+        version: 6.4.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@types/react':
         specifier: ^18.3.12

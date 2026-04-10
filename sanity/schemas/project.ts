@@ -1,5 +1,55 @@
 import { defineField, defineType } from 'sanity';
 
+// Rich blog-style content block — text + inline images + GIFs
+const blogContent = {
+  type: 'array',
+  of: [
+    {
+      type: 'block',
+      styles: [
+        { title: 'Normal', value: 'normal' },
+        { title: 'H2', value: 'h2' },
+        { title: 'H3', value: 'h3' },
+        { title: 'Quote', value: 'blockquote' },
+      ],
+      marks: {
+        decorators: [
+          { title: 'Bold', value: 'strong' },
+          { title: 'Italic', value: 'em' },
+          { title: 'Underline', value: 'underline' },
+        ],
+        annotations: [
+          {
+            name: 'link',
+            type: 'object',
+            title: 'Link',
+            fields: [{ name: 'href', type: 'url', title: 'URL' }],
+          },
+        ],
+      },
+    },
+    // Inline image (JPG, PNG, GIF, WebP)
+    {
+      type: 'image',
+      title: 'Imagen / GIF',
+      options: { hotspot: true },
+      fields: [
+        { name: 'alt', title: 'Descripción', type: 'string' },
+        { name: 'caption', title: 'Caption (opcional)', type: 'string' },
+      ],
+    },
+    // Inline video
+    {
+      type: 'file',
+      title: 'Video',
+      options: { accept: 'video/*' },
+      fields: [
+        { name: 'caption', title: 'Caption (opcional)', type: 'string' },
+      ],
+    },
+  ],
+};
+
 export default defineType({
   name: 'project',
   title: 'Proyecto',
@@ -24,15 +74,15 @@ export default defineType({
       title: 'Descripción corta (ES)',
       type: 'string',
       group: 'es',
-      description: 'Máximo 120 caracteres',
+      description: 'Máximo 120 caracteres — aparece en las tarjetas de proyecto',
       validation: (Rule) => Rule.required().max(120),
     }),
     defineField({
       name: 'description',
-      title: 'Descripción completa (ES)',
-      type: 'array',
+      title: 'Contenido del proyecto (ES)',
       group: 'es',
-      of: [{ type: 'block', styles: [{ title: 'Normal', value: 'normal' }, { title: 'H2', value: 'h2' }, { title: 'H3', value: 'h3' }], marks: { decorators: [{ title: 'Bold', value: 'strong' }, { title: 'Italic', value: 'em' }] } }],
+      description: 'Escribe, pega texto, sube imágenes y GIFs libremente',
+      ...blogContent,
     }),
 
     // ── English ──
@@ -48,15 +98,15 @@ export default defineType({
       title: 'Short description (EN)',
       type: 'string',
       group: 'en',
-      description: 'Max 120 characters',
+      description: 'Max 120 characters — shown on project cards',
       validation: (Rule) => Rule.max(120),
     }),
     defineField({
       name: 'descriptionEn',
-      title: 'Full description (EN)',
-      type: 'array',
+      title: 'Project content (EN)',
       group: 'en',
-      of: [{ type: 'block', styles: [{ title: 'Normal', value: 'normal' }, { title: 'H2', value: 'h2' }, { title: 'H3', value: 'h3' }], marks: { decorators: [{ title: 'Bold', value: 'strong' }, { title: 'Italic', value: 'em' }] } }],
+      description: 'Write, paste text, upload images and GIFs freely',
+      ...blogContent,
     }),
 
     // ── Meta ──
@@ -118,9 +168,10 @@ export default defineType({
     }),
     defineField({
       name: 'gallery',
-      title: 'Galería',
+      title: 'Galería (opcional)',
       type: 'array',
       group: 'media',
+      description: 'Galería adicional — las imágenes dentro del contenido van directo en el editor de arriba',
       of: [
         { type: 'image', options: { hotspot: true }, fields: [{ name: 'alt', title: 'Alt', type: 'string' }, { name: 'caption', title: 'Caption', type: 'string' }] },
         { type: 'file', title: 'Video', options: { accept: 'video/*' }, fields: [{ name: 'caption', title: 'Caption', type: 'string' }] },

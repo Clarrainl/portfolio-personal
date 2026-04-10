@@ -32,24 +32,24 @@ const {
   </a>
 
   <div class="relative z-10 text-center text-white px-6 max-w-4xl mx-auto">
-    <p class="text-sm font-medium tracking-[0.3em] uppercase text-white/60" style="margin-bottom: 2.5rem;">
+    <p class="text-xs md:text-sm font-medium tracking-[0.2em] md:tracking-[0.3em] uppercase text-white/60" style="margin-bottom: 2.5rem;">
       {tagline}
     </p>
-    <h1 class="font-display font-light text-[clamp(4rem,10vw,9rem)] leading-none tracking-wide" style="margin-bottom: 0.5rem;">
+    <h1 class="font-display font-light leading-none tracking-wide" style="font-size: clamp(3rem, 10vw, 9rem); margin-bottom: 0.5rem;">
       {name}
     </h1>
     <div class="w-16 h-px bg-[var(--color-accent)] mx-auto" style="margin-bottom: 2.5rem;"></div>
     <a
       href={ctaHref}
       class="inline-block rounded-full border border-white/15 bg-black/30 backdrop-blur-xl text-white/80 text-sm font-medium tracking-wide transition-colors duration-200 hover:text-white"
-      style="padding: 0.85rem 3rem;"
+      style="padding: 0.85rem 2rem;"
     >
       {ctaText}
     </a>
   </div>
 
   <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40">
-    <span class="text-xs tracking-widest uppercase">{lang === 'en' ? 'Scroll to know more about me' : 'Scroll para saber más de mí'}</span>
+    <span class="text-xs tracking-wider uppercase text-center px-4">{lang === 'en' ? 'Scroll to know more' : 'Scroll para saber más'}</span>
     <div class="w-px h-12 bg-white/20 relative overflow-hidden">
       <div class="absolute top-0 left-0 w-full bg-white/60 h-1/2 animate-[scroll-line_2s_ease-in-out_infinite]"></div>
     </div>
