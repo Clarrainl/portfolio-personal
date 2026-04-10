@@ -6,7 +6,7 @@ export const sanityClient = createClient({
   projectId: import.meta.env.SANITY_PROJECT_ID || 'zoh6ht03',
   dataset: import.meta.env.SANITY_DATASET || 'production',
   apiVersion: '2024-01-01',
-  useCdn: true,
+  useCdn: import.meta.env.PROD,
   token: import.meta.env.SANITY_API_TOKEN,
 });
 
@@ -48,7 +48,9 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
       _id, title, titleEn, slug, category, year,
       shortDescription, shortDescriptionEn,
       description, descriptionEn,
-      coverImage, gallery, featured, tags
+      coverImage, gallery, featured, tags,
+      authors, course, institution, moreInfoUrl,
+      heroVideo{ asset->{ url } }
     }
   `, { slug });
 }

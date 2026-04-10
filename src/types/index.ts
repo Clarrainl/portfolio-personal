@@ -32,6 +32,11 @@ export interface Project {
   gallery: GalleryItem[];
   featured: boolean;
   tags: string[];
+  authors?: string[];
+  course?: string;
+  institution?: string;
+  moreInfoUrl?: string;
+  heroVideo?: { asset: { url: string } };
 }
 
 export interface Education {

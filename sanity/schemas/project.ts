@@ -155,8 +155,43 @@ export default defineType({
       of: [{ type: 'string' }],
       options: { layout: 'tags' },
     }),
+    defineField({
+      name: 'authors',
+      title: 'Autores',
+      type: 'array',
+      group: 'meta',
+      of: [{ type: 'string' }],
+      options: { layout: 'tags' },
+    }),
+    defineField({
+      name: 'course',
+      title: 'Curso',
+      type: 'string',
+      group: 'meta',
+    }),
+    defineField({
+      name: 'institution',
+      title: 'Institución',
+      type: 'string',
+      group: 'meta',
+    }),
+    defineField({
+      name: 'moreInfoUrl',
+      title: 'Link de más información',
+      type: 'url',
+      group: 'meta',
+      description: 'URL a blog externo u otra fuente',
+    }),
 
     // ── Media ──
+    defineField({
+      name: 'heroVideo',
+      title: 'Video hero (opcional)',
+      type: 'file',
+      group: 'media',
+      options: { accept: 'video/*' },
+      description: 'Si se sube un video, reemplaza la imagen de portada en el hero a pantalla completa',
+    }),
     defineField({
       name: 'coverImage',
       title: 'Imagen principal',

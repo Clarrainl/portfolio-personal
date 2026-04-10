@@ -50,17 +50,18 @@ export default function CategoryFilter({ projects, lang = 'es' }: Props) {
 
   return (
     <div>
-      {/* Filter buttons */}
-      <div className="flex flex-wrap gap-2 mb-12">
+      {/* Filter buttons — full viewport width, centered on same axis as nav */}
+      <div className="w-full flex flex-wrap justify-center gap-3" style={{ marginBottom: '2rem' }}>
         {categories.map((cat) => (
           <button
             key={cat}
             onClick={() => handleCategoryChange(cat)}
+            style={{ padding: '0.25rem 0.9rem' }}
             className={[
-              'px-5 py-2 text-sm font-medium tracking-wide transition-all duration-200 border',
+              'text-[10px] font-medium tracking-widest uppercase rounded-full transition-all duration-200',
               active === cat
-                ? 'bg-[#0A0A0A] text-white border-[#0A0A0A]'
-                : 'bg-transparent text-[#6B6B6B] border-[#E5E2DD] hover:border-[#0A0A0A] hover:text-[#0A0A0A]',
+                ? 'bg-[#0A0A0A] text-white'
+                : 'bg-[#0A0A0A] text-white/50 hover:text-white',
             ].join(' ')}
           >
             {categoryLabels[cat] || cat}
@@ -68,10 +69,12 @@ export default function CategoryFilter({ projects, lang = 'es' }: Props) {
         ))}
       </div>
 
-      {/* Projects grid */}
+      {/* Projects grid — same bounds as the header line (px-6 lg:px-12 + 80% centered) */}
+      <div className="px-6 lg:px-12">
+        <div style={{ width: '80%', margin: '0 auto' }}>
       <div
         className={[
-          'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 transition-opacity duration-200',
+          'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 transition-opacity duration-200',
           animating ? 'opacity-0' : 'opacity-100',
         ].join(' ')}
       >
@@ -85,48 +88,41 @@ export default function CategoryFilter({ projects, lang = 'es' }: Props) {
             <a
               key={project._id}
               href={href}
-              className="group block overflow-hidden border border-[#E5E2DD] transition-all duration-300"
+              className="group block relative aspect-[4/3] rounded-2xl overflow-hidden bg-[#F8F7F5] cursor-pointer"
             >
               {/* Image */}
-              <div className="relative aspect-[4/3] overflow-hidden bg-[#F8F7F5]">
-                {imageUrl ? (
-                  <img
-                    src={imageUrl}
-                    alt={title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                    loading="lazy"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-[#F8F7F5] flex items-center justify-center">
-                    <span className="text-[#6B6B6B] text-sm">{lang === 'en' ? 'No image' : 'Sin imagen'}</span>
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all duration-300 flex items-end p-5">
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-y-2 group-hover:translate-y-0">
-                    <p className="text-white/70 text-xs tracking-widest uppercase mb-1">
-                      {categoryLabels[project.category] || project.category}
-                    </p>
-                    <p className="text-white font-serif text-xl font-light">{title}</p>
-                  </div>
-                </div>
+              {imageUrl ? (
+                <img
+                  src={imageUrl}
+                  alt={title}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                  loading="lazy"
+                />
+              ) : (
+                <div className="w-full h-full bg-[#1a1a1a]" />
+              )}
+
+              {/* Default: pill near bottom */}
+              <div className="absolute bottom-4 left-0 right-0 flex justify-center transition-opacity duration-300 group-hover:opacity-0">
+                <span style={{ padding: '0.375rem 1rem' }} className="bg-black/40 backdrop-blur-md text-white text-[10px] font-medium tracking-widest uppercase rounded-full">
+                  {title}
+                </span>
               </div>
 
-              {/* Info */}
-              <div className="p-4 bg-white">
-                <div className="flex items-start justify-between gap-2">
-                  <h3 className="text-base font-medium text-[#0A0A0A] leading-tight">{title}</h3>
-                  <span className="text-xs text-[#6B6B6B] shrink-0">{project.year}</span>
-                </div>
-                <p className="text-xs text-[#6B6B6B] mt-1 tracking-wider uppercase">
-                  {categoryLabels[project.category] || project.category}
-                </p>
+              {/* Hover: dark overlay + description */}
+              <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 px-8">
+                <span style={{ padding: '0.375rem 1rem' }} className="bg-black/50 backdrop-blur-md text-white text-[10px] font-medium tracking-widest uppercase rounded-full">
+                  {title}
+                </span>
                 {shortDesc && (
-                  <p className="text-sm text-[#6B6B6B] mt-2 line-clamp-2">{shortDesc}</p>
+                  <p className="text-white/80 text-xs text-center leading-relaxed line-clamp-3">{shortDesc}</p>
                 )}
               </div>
             </a>
           );
         })}
+      </div>
+        </div>
       </div>
 
       {filtered.length === 0 && (

@@ -4,30 +4,39 @@ import MediaGallery from '../../components/ui/MediaGallery.tsx';
 import { getProjects, getProjectBySlug, urlFor } from '../../lib/sanity.js';
 import { PortableText } from '@portabletext/react';
 import { portableTextComponents } from '../../components/ui/PortableTextComponents.tsx';
+import type { Project } from '../../types/index.js';
 
 export async function getStaticPaths() {
   const projects = await getProjects();
-  return projects.map((project) => ({
+  return projects.map((project, index) => ({
     params: { slug: project.slug.current },
+    props: {
+      prevProject: index > 0 ? projects[index - 1] : null,
+      nextProject: index < projects.length - 1 ? projects[index + 1] : null,
+    },
   }));
 }
 
 const { slug } = Astro.params;
+const { prevProject, nextProject } = Astro.props as {
+  prevProject: Pick<Project, 'title' | 'slug'> | null;
+  nextProject: Pick<Project, 'title' | 'slug'> | null;
+};
 const project = await getProjectBySlug(slug!);
 
 if (!project) {
   return Astro.redirect('/404');
 }
 
-const categoryLabels: Record<string, string> = {
-  arquitectura: 'Arquitectura',
-  robotica: 'Robótica',
-  impresion3d: 'Impresión 3D',
-};
-
 const ogImage = project.coverImage
   ? urlFor(project.coverImage).width(1200).height(630).fit('crop').url()
   : undefined;
+
+const coverImageUrl = project.coverImage
+  ? urlFor(project.coverImage).width(1920).height(1080).fit('crop').url()
+  : null;
+
+const hasHero = project.heroVideo?.asset?.url || coverImageUrl;
 ---
 
 <BaseLayout
@@ -35,112 +44,172 @@ const ogImage = project.coverImage
   description={project.shortDescription}
   ogImage={ogImage}
 >
-  <div class="pt-16">
-    <!-- Project Header -->
-    <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-16 border-b border-[var(--color-border)]">
-      <div class="flex items-center gap-3 mb-6">
-        <span class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase">
-          {categoryLabels[project.category] || project.category}
-        </span>
-        <span class="w-px h-3 bg-[var(--color-border)]"></span>
-        <span class="text-xs text-[var(--color-text-secondary)]">{project.year}</span>
+  <!-- ── HERO: pantalla completa ── -->
+  {hasHero && (
+    <div class="relative w-full overflow-hidden" style="height: 100svh;">
+      {project.heroVideo?.asset?.url ? (
+        <video
+          src={project.heroVideo.asset.url}
+          autoplay
+          muted
+          loop
+          playsinline
+          class="w-full h-full object-cover"
+        />
+      ) : coverImageUrl ? (
+        <img
+          src={coverImageUrl}
+          alt={project.coverImage?.alt || project.title}
+          class="w-full h-full object-cover"
+        />
+      ) : null}
+
+      <!-- Scroll indicator -->
+      <div class="absolute bottom-10 left-0 right-0 flex flex-col items-center gap-2 scroll-indicator">
+        <svg width="48" height="48" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="chevron">
+          <path d="M4 7l6 6 6-6" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="font-sans text-xs tracking-[0.3em] uppercase text-white">scroll</span>
       </div>
-      <h1 class="font-display text-5xl md:text-7xl font-light leading-none">{project.title}</h1>
     </div>
+  )}
 
-    <!-- Cover image -->
-    {project.coverImage && (
-      <div class="max-w-[1280px] mx-auto px-6 lg:px-12 pt-12">
-        <div class="aspect-[16/9] overflow-hidden">
-          <img
-            src={urlFor(project.coverImage).width(1280).height(720).fit('crop').url()}
-            alt={project.coverImage.alt || project.title}
-            class="w-full h-full object-cover"
-          />
+  <!-- ── CUERPO DEL PROYECTO ── -->
+  <div class="px-6 lg:px-12" style="padding-top: 6rem; padding-bottom: 4rem;">
+    <div style="width: 80%; margin: 0 auto;">
+
+      <!-- Título h1 -->
+      <h1 class="font-display text-5xl md:text-6xl font-light leading-tight mb-12">{project.title}</h1>
+
+      <!-- Descripción (portable text) -->
+      {project.description && project.description.length > 0 && (
+        <div class="prose-project mb-16">
+          <PortableText value={project.description} components={portableTextComponents} client:load />
         </div>
-      </div>
-    )}
+      )}
 
-    <!-- Gallery -->
-    {project.gallery && project.gallery.length > 0 && (
-      <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-12">
-        <MediaGallery items={project.gallery} client:load />
-      </div>
-    )}
-
-    <!-- Description & Meta -->
-    <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-12">
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
-        <!-- Description -->
-        <div class="lg:col-span-2">
-          {project.description && project.description.length > 0 && (
-            <div class="prose prose-lg max-w-none text-[var(--color-text)] leading-relaxed">
-              <PortableText value={project.description} components={portableTextComponents} />
-            </div>
+      <!-- Bloque de información del proyecto -->
+      {(project.authors?.length || project.course || project.institution || project.year || project.moreInfoUrl) && (
+        <div class="border-t border-[var(--color-border)] pt-10 mt-10">
+          <h3 class="font-sans text-xs tracking-widest uppercase text-[var(--color-text-secondary)] mb-8">Información del proyecto</h3>
+          <ul class="space-y-4">
+            {project.authors && project.authors.length > 0 && (
+              <li class="font-sans text-sm">
+                <span class="font-semibold">Autores</span>
+                <span class="text-[var(--color-text-secondary)] ml-3">{project.authors.join(', ')}</span>
+              </li>
+            )}
+            {project.course && (
+              <li class="font-sans text-sm">
+                <span class="font-semibold">Curso</span>
+                <span class="text-[var(--color-text-secondary)] ml-3">{project.course}</span>
+              </li>
+            )}
+            {project.institution && (
+              <li class="font-sans text-sm">
+                <span class="font-semibold">Institución</span>
+                <span class="text-[var(--color-text-secondary)] ml-3">{project.institution}</span>
+              </li>
+            )}
+            <li class="font-sans text-sm">
+              <span class="font-semibold">Año</span>
+              <span class="text-[var(--color-text-secondary)] ml-3">{project.year}</span>
+            </li>
+          </ul>
+          {project.moreInfoUrl && (
+            <a
+              href={project.moreInfoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-block mt-8 font-sans text-xs tracking-widest uppercase border-b border-[var(--color-text)] pb-0.5 hover:text-[var(--color-text-secondary)] hover:border-[var(--color-text-secondary)] transition-colors duration-200"
+            >
+              Más información →
+            </a>
           )}
         </div>
+      )}
+    </div>
+  </div>
 
-        <!-- Meta sidebar -->
-        <div class="lg:col-span-1">
-          <div class="border-t border-[var(--color-border)] pt-6 space-y-6">
-            <div>
-              <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.2em] uppercase mb-2">Categoría</p>
-              <p class="text-sm font-medium">{categoryLabels[project.category] || project.category}</p>
-            </div>
-            <div>
-              <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.2em] uppercase mb-2">Año</p>
-              <p class="text-sm font-medium">{project.year}</p>
-            </div>
-            {project.tags && project.tags.length > 0 && (
-              <div>
-                <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.2em] uppercase mb-3">Tecnologías</p>
-                <div class="flex flex-wrap gap-2">
-                  {project.tags.map((tag) => (
-                    <span class="text-xs px-3 py-1 border border-[var(--color-border)] text-[var(--color-text-secondary)]">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+  <!-- ── IMÁGENES ── -->
+  {project.gallery && project.gallery.length > 0 && (
+    <div class="px-6 lg:px-12" style="padding-bottom: 6rem;">
+      <div style="width: 80%; margin: 0 auto;">
+        <h2 class="font-display text-3xl font-light mb-10">Imágenes</h2>
+        <MediaGallery items={project.gallery} client:load />
       </div>
     </div>
+  )}
 
-    <!-- Back button -->
-    <div class="max-w-[1280px] mx-auto px-6 lg:px-12 pb-16 border-t border-[var(--color-border)] pt-8">
-      <a
-        href="/proyectos"
-        class="inline-flex items-center gap-2 text-sm font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors duration-200"
-      >
-        ← Volver a proyectos
-      </a>
+  <!-- ── NAVEGACIÓN ENTRE PROYECTOS ── -->
+  <div class="border-t border-[var(--color-border)] px-6 lg:px-12 py-12">
+    <div style="width: 80%; margin: 0 auto;">
+      <div class="flex items-center justify-between gap-4">
+        {prevProject ? (
+          <a
+            href={`/proyectos/${prevProject.slug.current}`}
+            class="font-sans text-xs tracking-widest uppercase rounded-full border border-[var(--color-border)] px-6 py-2.5 text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:border-[var(--color-text)] transition-all duration-200"
+          >
+            ← {prevProject.title}
+          </a>
+        ) : <span />}
+
+        {nextProject ? (
+          <a
+            href={`/proyectos/${nextProject.slug.current}`}
+            class="font-sans text-xs tracking-widest uppercase rounded-full border border-[var(--color-border)] px-6 py-2.5 text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:border-[var(--color-text)] transition-all duration-200"
+          >
+            {nextProject.title} →
+          </a>
+        ) : <span />}
+      </div>
     </div>
   </div>
 </BaseLayout>
 
 <style>
-  .prose h2 {
+  @keyframes bounce-down {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(8px); }
+  }
+
+  .scroll-indicator {
+    opacity: 1;
+  }
+
+  .chevron {
+    animation: bounce-down 1.8s ease-in-out infinite;
+  }
+
+  .prose-project :global(p) {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.85;
+    color: var(--color-text-secondary);
+    margin-bottom: 1.5rem;
+  }
+  .prose-project :global(h2) {
     font-family: var(--font-display);
     font-size: 2rem;
     font-weight: 300;
-    margin-top: 2rem;
+    color: var(--color-text);
+    margin-top: 2.5rem;
     margin-bottom: 1rem;
   }
-  .prose h3 {
-    font-size: 1.25rem;
+  .prose-project :global(h3) {
+    font-family: var(--font-sans);
+    font-size: 1.1rem;
     font-weight: 500;
-    margin-top: 1.5rem;
+    color: var(--color-text);
+    margin-top: 2rem;
     margin-bottom: 0.75rem;
   }
-  .prose p {
-    margin-bottom: 1rem;
-    color: var(--color-text-secondary);
-    line-height: 1.75;
-  }
-  .prose strong {
+  .prose-project :global(strong) {
     color: var(--color-text);
-    font-weight: 500;
+    font-weight: 600;
+  }
+  .prose-project :global(img) {
+    width: 100%;
+    margin: 2rem 0;
   }
 </style>

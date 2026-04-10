@@ -12,6 +12,9 @@ export default defineConfig({
   integrations: [react(), sitemap()],
   site: process.env.PUBLIC_SITE_URL || 'http://localhost:4321',
   vite: {
-    plugins: [tailwindcss()]
+    plugins: [tailwindcss()],
+    resolve: {
+      dedupe: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime']
+    }
   }
 });

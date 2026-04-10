@@ -12,13 +12,13 @@ const projects = await getProjects();
 >
   <div class="pt-24">
     <!-- Page Header -->
-    <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-16 border-b border-[var(--color-border)]">
-      <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-4">Trabajo</p>
-      <h1 class="font-display text-6xl font-light">Proyectos</h1>
+    <div class="px-6 lg:px-12 text-center" style="padding-top: 5rem; padding-bottom: 1rem;">
+      <h1 class="font-sans text-6xl font-light uppercase tracking-widest">Proyectos</h1>
+      <div style="height: 1px; background: #555; margin: 2.5rem auto 0; width: 80%;"></div>
     </div>
 
     <!-- Grid with filter -->
-    <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-16">
+    <div class="w-full pt-3" style="padding-bottom: 3rem;">
       <CategoryFilter projects={projects} client:load />
     </div>
   </div>
