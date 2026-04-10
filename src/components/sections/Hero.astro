@@ -20,25 +20,25 @@ const {
 ---
 
 <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
-  <VideoBackground />
+  <VideoBackground mp4="/hero.mp4" />
 
-  <!-- Name scrolls with the hero, positioned below the fixed pill -->
-  <a
-    href={lang === 'es' ? '/' : '/en'}
-    class="absolute hidden md:block font-display text-xl font-light tracking-widest text-white no-underline drop-shadow-sm"
-    style="top: 5.5rem; left: 50%; transform: translateX(-50%); white-space: nowrap; z-index: 40;"
+  <!-- Portafolio + Name stacked, scrolls with hero -->
+  <div
+    class="absolute hidden md:flex flex-col items-center gap-1"
+    style="top: 5rem; left: 50%; transform: translateX(-50%); white-space: nowrap; z-index: 40;"
   >
-    Charlie Larraín L.
-  </a>
-
-  <div class="relative z-10 text-center text-white px-6 max-w-4xl mx-auto">
-    <p class="text-xs md:text-sm font-medium tracking-[0.2em] md:tracking-[0.3em] uppercase text-white/60" style="margin-bottom: 2.5rem;">
-      {tagline}
-    </p>
-    <h1 class="font-display font-light leading-none tracking-wide" style="font-size: clamp(3rem, 10vw, 9rem); margin-bottom: 0.5rem;">
+    <span class="font-display text-xl font-light tracking-widest text-white drop-shadow-sm">
       {name}
-    </h1>
-    <div class="w-16 h-px bg-[var(--color-accent)] mx-auto" style="margin-bottom: 2.5rem;"></div>
+    </span>
+    <a
+      href={lang === 'es' ? '/' : '/en'}
+      class="font-display text-xl font-light tracking-widest text-white/70 no-underline drop-shadow-sm"
+    >
+      Charlie Larraín L.
+    </a>
+  </div>
+
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-white/40">
     <a
       href={ctaHref}
       class="inline-block rounded-full border border-white/15 bg-black/30 backdrop-blur-xl text-white/80 text-sm font-medium tracking-wide transition-colors duration-200 hover:text-white"
@@ -46,9 +46,7 @@ const {
     >
       {ctaText}
     </a>
-  </div>
-
-  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40">
+    <p class="text-xs font-medium tracking-[0.2em] uppercase text-white/60">{tagline}</p>
     <span class="text-xs tracking-wider uppercase text-center px-4">{lang === 'en' ? 'Scroll to know more' : 'Scroll para saber más'}</span>
     <div class="w-px h-12 bg-white/20 relative overflow-hidden">
       <div class="absolute top-0 left-0 w-full bg-white/60 h-1/2 animate-[scroll-line_2s_ease-in-out_infinite]"></div>
