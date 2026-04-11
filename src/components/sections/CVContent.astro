@@ -17,9 +17,8 @@ const portfolioPdf = lang === 'en'
   : '/cv/Portfolio_Carlos%20Larra%C3%ADn%20L_ES.pdf';
 ---
 
-<div class="px-6 lg:px-12" style="padding-top: 1.5rem; padding-bottom: 8rem;">
-  <div style="width: 80%; margin: 0 auto;">
-  <div class="md:ml-[50%]">
+<div style="padding-top: 1.5rem; padding-bottom: 8rem;">
+  <div class="cv-content-inner px-6">
 
     <!-- ── EDUCACIÓN ── -->
     {cv.educacion && cv.educacion.length > 0 && (
@@ -128,5 +127,14 @@ const portfolioPdf = lang === 'en'
     </div>
 
   </div>
-  </div>
 </div>
+
+<style>
+  @media (min-width: 768px) {
+    .cv-content-inner {
+      margin-left: 50%;
+      padding-left: 0;
+      padding-right: 10%;
+    }
+  }
+</style>
