@@ -11,16 +11,20 @@ export async function getStaticPaths() {
   return projects.map((project, index) => ({
     params: { slug: project.slug.current },
     props: {
-      prevProject: index > 0 ? projects[index - 1] : null,
-      nextProject: index < projects.length - 1 ? projects[index + 1] : null,
+      prevProject: index > 0
+        ? { title: projects[index - 1].title, slug: projects[index - 1].slug.current }
+        : null,
+      nextProject: index < projects.length - 1
+        ? { title: projects[index + 1].title, slug: projects[index + 1].slug.current }
+        : null,
     },
   }));
 }
 
 const { slug } = Astro.params;
 const { prevProject, nextProject } = Astro.props as {
-  prevProject: Pick<Project, 'title' | 'slug'> | null;
-  nextProject: Pick<Project, 'title' | 'slug'> | null;
+  prevProject: { title: string; slug: string } | null;
+  nextProject: { title: string; slug: string } | null;
 };
 const project = await getProjectBySlug(slug!);
 
@@ -147,7 +151,7 @@ const hasHero = project.heroVideo?.asset?.url || coverImageUrl;
       <div class="flex items-center justify-between gap-4">
         {prevProject ? (
           <a
-            href={`/proyectos/${prevProject.slug.current}`}
+            href={`/proyectos/${prevProject.slug}`}
             class="font-sans text-xs tracking-widest uppercase rounded-full border border-[var(--color-border)] px-6 py-2.5 text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:border-[var(--color-text)] transition-all duration-200"
           >
             ← {prevProject.title}
@@ -156,7 +160,7 @@ const hasHero = project.heroVideo?.asset?.url || coverImageUrl;
 
         {nextProject ? (
           <a
-            href={`/proyectos/${nextProject.slug.current}`}
+            href={`/proyectos/${nextProject.slug}`}
             class="font-sans text-xs tracking-widest uppercase rounded-full border border-[var(--color-border)] px-6 py-2.5 text-[var(--color-text-secondary)] hover:text-[var(--color-text)] hover:border-[var(--color-text)] transition-all duration-200"
           >
             {nextProject.title} →
