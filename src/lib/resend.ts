@@ -14,8 +14,10 @@ export async function sendContactEmail(data: ContactData) {
   const contactEmail = import.meta.env.CONTACT_EMAIL || 'clarrainlihn@gmail.com';
   const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'http://localhost:4321';
 
+  const fromEmail = import.meta.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+
   const result = await resend.emails.send({
-    from: `Portfolio <noreply@${new URL(siteUrl).hostname || 'localhost'}>`,
+    from: `Portfolio <${fromEmail}>`,
     to: [contactEmail],
     replyTo: email,
     subject: `Nuevo mensaje de contacto — ${name}`,

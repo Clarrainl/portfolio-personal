@@ -128,6 +128,8 @@ export default defineType({
           { title: 'Arquitectura', value: 'arquitectura' },
           { title: 'Robótica', value: 'robotica' },
           { title: 'Impresión 3D', value: 'impresion3d' },
+          { title: 'Escultura', value: 'escultura' },
+          { title: 'Docencia', value: 'docencia' },
         ],
         layout: 'radio',
       },
@@ -259,7 +261,7 @@ export default defineType({
   preview: {
     select: { title: 'title', subtitle: 'category', media: 'coverImage' },
     prepare({ title, subtitle, media }) {
-      const categories: Record<string, string> = { arquitectura: 'Arquitectura', robotica: 'Robótica', impresion3d: 'Impresión 3D' };
+      const categories: Record<string, string> = { arquitectura: 'Arquitectura', robotica: 'Robótica', impresion3d: 'Impresión 3D', escultura: 'Escultura', docencia: 'Docencia' };
       return { title, subtitle: categories[subtitle] || subtitle, media };
     },
   },

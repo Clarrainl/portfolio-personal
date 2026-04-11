@@ -11,6 +11,8 @@ const categoryLabelsEs: Record<string, string> = {
   arquitectura: 'Arquitectura',
   robotica: 'Robótica',
   impresion3d: 'Impresión 3D',
+  escultura: 'Escultura',
+  docencia: 'Docencia',
 };
 
 const categoryLabelsEn: Record<string, string> = {
@@ -18,6 +20,8 @@ const categoryLabelsEn: Record<string, string> = {
   arquitectura: 'Architecture',
   robotica: 'Robotics',
   impresion3d: '3D Printing',
+  escultura: 'Sculpture',
+  docencia: 'Teaching',
 };
 
 function buildImageUrl(coverImage: Project['coverImage'] | undefined): string | null {
