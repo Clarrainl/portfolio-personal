@@ -17,6 +17,12 @@ export type GalleryItem =
   | (SanityImageAsset & { _key: string })
   | (SanityVideoAsset & { _key: string });
 
+export interface GallerySection {
+  _key: string;
+  sectionTitle?: string;
+  images: (SanityImageAsset & { _key: string })[];
+}
+
 export interface Project {
   _id: string;
   title: string;
@@ -29,7 +35,7 @@ export interface Project {
   description: PortableTextBlock[];
   descriptionEn?: PortableTextBlock[];
   coverImage: SanityImageAsset;
-  gallery: GalleryItem[];
+  gallery: GallerySection[];
   featured: boolean;
   tags: string[];
   authors?: string[];
@@ -37,6 +43,7 @@ export interface Project {
   institution?: string;
   moreInfoUrl?: string;
   heroVideo?: { asset: { url: string } };
+  videoUrl?: string;
 }
 
 export interface Education {
@@ -65,23 +72,29 @@ export interface About {
   socialLinks: SocialLink[];
 }
 
-export interface CVItem {
+export interface CVEducacion {
   _key: string;
-  role: string;
-  place: string;
-  period: string;
+  yearStart?: string;
+  yearEnd?: string;
+  program: string;
+  institution: string;
+  city?: string;
   description?: string;
 }
 
-export interface CVSection {
+export interface CVExperiencia {
   _key: string;
-  title: string;
-  items: CVItem[];
+  year?: string;
+  company: string;
+  role: string;
 }
 
 export interface CV {
   _id: string;
-  sections: CVSection[];
+  educacion: CVEducacion[];
+  experiencia: CVExperiencia[];
+  habilidades: string[];
+  intereses: string[];
   lastUpdated: string;
 }
 

@@ -48,9 +48,11 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
       _id, title, titleEn, slug, category, year,
       shortDescription, shortDescriptionEn,
       description, descriptionEn,
-      coverImage, gallery, featured, tags,
+      coverImage, featured, tags,
+      gallery[]{ _key, sectionTitle, images[]{ _key, _type, asset, alt, caption } },
       authors, course, institution, moreInfoUrl,
-      heroVideo{ asset->{ url } }
+      heroVideo{ asset->{ url } },
+      videoUrl
     }
   `, { slug });
 }
@@ -66,7 +68,7 @@ export async function getAbout(): Promise<About | null> {
 export async function getCV(): Promise<CV | null> {
   return sanityFetch<CV | null>(`
     *[_type == "cv"][0] {
-      _id, sections, lastUpdated
+      _id, educacion, experiencia, habilidades, intereses, lastUpdated
     }
   `);
 }

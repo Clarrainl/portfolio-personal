@@ -1,9 +1,8 @@
 ---
 import BaseLayout from '../../components/layout/BaseLayout.astro';
+import CVContent from '../../components/sections/CVContent.astro';
 import { getCV } from '../../lib/sanity.js';
-import { t } from '../../lib/i18n.js';
 
-const lang = 'en';
 const cv = await getCV();
 ---
 
@@ -12,72 +11,16 @@ const cv = await getCV();
   description="Curriculum Vitae — Architect, Robotics, 3D Printing."
 >
   <div class="pt-24">
-    <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-16 border-b border-[var(--color-border)]">
-      <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-4">{t(lang, 'cv.label')}</p>
-      <h1 class="font-display text-6xl font-light">{t(lang, 'cv.title')}</h1>
+    <div class="px-6 lg:px-12 text-center" style="padding-top: 5rem; padding-bottom: 2rem;">
+      <h1 class="font-sans font-light uppercase tracking-widest text-6xl">CV</h1>
+      <div style="height: 1px; background: #555; margin: 2.5rem auto 0; width: 80%;"></div>
     </div>
 
     {cv ? (
-      <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-12">
-        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-12 border-b border-[var(--color-border)]">
-          <div>
-            <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-2">Curriculum Vitae</p>
-            {cv.lastUpdated && (
-              <p class="text-xs text-[var(--color-text-secondary)]">
-                {t(lang, 'cv.updated')}: {new Date(cv.lastUpdated).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}
-              </p>
-            )}
-          </div>
-          <a
-            href="/cv/CV_Carlos%20Larra%C3%ADn%20Lihn.pdf"
-            download
-            class="inline-flex items-center gap-3 border border-[var(--color-text)] text-sm font-medium tracking-wide px-6 py-3 hover:bg-[var(--color-text)] hover:text-white transition-all duration-200"
-          >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 1v10M4 7l4 4 4-4M2 14h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            {t(lang, 'cv.download')}
-          </a>
-        </div>
-
-        <div class="divide-y divide-[var(--color-border)]">
-          {cv.sections.map((section) => (
-            <section class="py-12 fade-in-section">
-              <h2 class="font-display text-3xl font-light mb-8">{section.title}</h2>
-              <div class="space-y-8">
-                {section.items.map((item) => (
-                  <div class="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-8">
-                    <div class="md:col-span-1">
-                      <p class="text-xs text-[var(--color-text-secondary)] tracking-wide">{item.period}</p>
-                    </div>
-                    <div class="md:col-span-3">
-                      <h3 class="text-base font-medium text-[var(--color-text)]">{item.role}</h3>
-                      <p class="text-sm text-[var(--color-accent-dark)] mt-0.5">{item.place}</p>
-                      {item.description && (
-                        <p class="text-sm text-[var(--color-text-secondary)] mt-2 leading-relaxed">
-                          {item.description}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          ))}
-        </div>
-      </div>
+      <CVContent cv={cv} lang="en" />
     ) : (
-      <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-24">
-        <div class="text-center mb-12">
-          <p class="text-[var(--color-text-secondary)] mb-6">{t(lang, 'cv.empty')}</p>
-          <a
-            href="/cv/CV_Carlos%20Larra%C3%ADn%20Lihn.pdf"
-            download
-            class="inline-flex items-center gap-3 border border-[var(--color-text)] text-sm font-medium px-6 py-3 hover:bg-[var(--color-text)] hover:text-white transition-all duration-200"
-          >
-            {t(lang, 'cv.download')}
-          </a>
-        </div>
+      <div class="px-6 lg:px-12 py-24 text-center">
+        <p class="text-[var(--color-text-secondary)]">CV not available yet.</p>
       </div>
     )}
   </div>

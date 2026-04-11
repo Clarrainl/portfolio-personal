@@ -10,9 +10,9 @@ const projects = await getProjects();
 
 <BaseLayout title="Projects" description="Full gallery of architecture, robotics and 3D printing projects.">
   <div class="pt-24">
-    <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-16 border-b border-[var(--color-border)]">
-      <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-4">{t(lang, 'projects.label')}</p>
+    <div class="px-6 lg:px-12 text-center" style="padding-top: 5rem; padding-bottom: 4rem;">
       <h1 class="font-display text-6xl font-light">{t(lang, 'projects.title')}</h1>
+      <div style="height: 1px; background: #555; margin: 2.5rem auto 0; width: 80%;"></div>
     </div>
     <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-16">
       <CategoryFilter projects={projects} lang={lang} client:load />

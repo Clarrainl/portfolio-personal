@@ -203,14 +203,57 @@ export default defineType({
     }),
     defineField({
       name: 'gallery',
-      title: 'Galería (opcional)',
+      title: 'Galerías de imágenes',
       type: 'array',
       group: 'media',
-      description: 'Galería adicional — las imágenes dentro del contenido van directo en el editor de arriba',
+      description: 'Añade una o varias secciones, cada una con su propio título y fotos',
       of: [
-        { type: 'image', options: { hotspot: true }, fields: [{ name: 'alt', title: 'Alt', type: 'string' }, { name: 'caption', title: 'Caption', type: 'string' }] },
-        { type: 'file', title: 'Video', options: { accept: 'video/*' }, fields: [{ name: 'caption', title: 'Caption', type: 'string' }] },
+        {
+          type: 'object',
+          name: 'gallerySection',
+          title: 'Sección',
+          fields: [
+            {
+              name: 'sectionTitle',
+              title: 'Título de la sección',
+              type: 'string',
+              description: 'Ej: Construcción, Proyecto final, Montaje',
+            },
+            {
+              name: 'images',
+              title: 'Imágenes',
+              type: 'array',
+              of: [
+                {
+                  type: 'image',
+                  options: { hotspot: true },
+                  fields: [
+                    { name: 'alt', title: 'Alt', type: 'string' },
+                    { name: 'caption', title: 'Caption', type: 'string' },
+                  ],
+                },
+              ],
+              options: { layout: 'grid' },
+            },
+          ],
+          preview: {
+            select: { title: 'sectionTitle', images: 'images' },
+            prepare({ title, images }: { title: string; images: unknown[] }) {
+              return {
+                title: title || 'Sin título',
+                subtitle: `${(images || []).length} imagen(es)`,
+              };
+            },
+          },
+        },
       ],
+    }),
+    defineField({
+      name: 'videoUrl',
+      title: 'URL del video (YouTube)',
+      type: 'url',
+      group: 'media',
+      description: 'Pega el link de YouTube del video explicativo del proyecto',
     }),
   ],
   preview: {

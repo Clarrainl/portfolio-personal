@@ -3,53 +3,48 @@ import type { CV } from '../../types/index.js';
 
 interface Props {
   cv: CV;
+  lang?: 'es' | 'en';
 }
 
-const { cv } = Astro.props;
+const { cv, lang = 'es' } = Astro.props;
+
+const cvPdf = lang === 'en'
+  ? '/cv/CV_Carlos%20Larra%C3%ADn%20Lihn_EN.pdf'
+  : '/cv/CV_Carlos%20Larra%C3%ADn%20Lihn_ES.pdf';
+
+const portfolioPdf = lang === 'en'
+  ? '/cv/Portfolio_Carlos%20Larra%C3%ADn%20L_EN.pdf'
+  : '/cv/Portfolio_Carlos%20Larra%C3%ADn%20L_ES.pdf';
 ---
 
-<div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-12">
-  <!-- CV Header with download -->
-  <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-12 border-b border-[var(--color-border)]">
-    <div>
-      <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-2">Curriculum Vitae</p>
-      {cv.lastUpdated && (
-        <p class="text-xs text-[var(--color-text-secondary)]">
-          Actualizado: {new Date(cv.lastUpdated).toLocaleDateString('es-ES', { year: 'numeric', month: 'long' })}
-        </p>
-      )}
-    </div>
-    <a
-      href="/cv/CV_Carlos%20Larra%C3%ADn%20Lihn.pdf"
-      download
-      class="inline-flex items-center gap-3 border border-[var(--color-text)] text-sm font-medium tracking-wide px-6 py-3 hover:bg-[var(--color-text)] hover:text-white transition-all duration-200"
-    >
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M8 1v10M4 7l4 4 4-4M2 14h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      Descargar CV (PDF)
-    </a>
-  </div>
+<div class="px-6 lg:px-12" style="padding-top: 4rem; padding-bottom: 8rem;">
+  <div style="width: 80%; margin: 0 auto;">
+  <div style="margin-left: 50%;">
 
-  <!-- Sections -->
-  <div class="divide-y divide-[var(--color-border)]">
-    {cv.sections.map((section) => (
-      <section class="py-12 fade-in-section">
-        <h2 class="font-display text-3xl font-light mb-8">{section.title}</h2>
-        <div class="space-y-8">
-          {section.items.map((item) => (
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-8">
-              <!-- Period -->
-              <div class="md:col-span-1">
-                <p class="text-xs text-[var(--color-text-secondary)] tracking-wide">{item.period}</p>
+    <!-- ── EDUCACIÓN ── -->
+    {cv.educacion && cv.educacion.length > 0 && (
+      <section style="margin-bottom: 6rem;">
+        <h2 class="font-sans font-bold text-sm tracking-widest uppercase" style="margin-bottom: 1rem;">Educación</h2>
+        <div style="height: 2px; background: #0A0A0A; margin-bottom: 3rem;"></div>
+
+        <div style="display: flex; flex-direction: column; gap: 2rem;">
+          {cv.educacion.map((entry) => (
+            <div class="grid grid-cols-4 gap-8">
+              <!-- Años -->
+              <div class="col-span-1">
+                <p class="font-sans text-sm text-[var(--color-text-secondary)]">
+                  {entry.yearStart}{entry.yearEnd ? ` – ${entry.yearEnd}` : ''}
+                </p>
               </div>
-              <!-- Content -->
-              <div class="md:col-span-3">
-                <h3 class="text-base font-medium text-[var(--color-text)]">{item.role}</h3>
-                <p class="text-sm text-[var(--color-accent-dark)] mt-0.5">{item.place}</p>
-                {item.description && (
-                  <p class="text-sm text-[var(--color-text-secondary)] mt-2 leading-relaxed">
-                    {item.description}
+              <!-- Contenido -->
+              <div class="col-span-3">
+                <h3 class="font-sans text-sm font-bold text-[var(--color-text)]">{entry.program}</h3>
+                <p class="font-sans text-sm text-[var(--color-text)] mt-0.5">
+                  {entry.institution}{entry.city ? `, ${entry.city}` : ''}
+                </p>
+                {entry.description && (
+                  <p class="font-sans text-sm text-[var(--color-text-secondary)] leading-relaxed" style="font-style: italic; text-align: justify; margin-top: 1rem;">
+                    {entry.description}
                   </p>
                 )}
               </div>
@@ -57,6 +52,81 @@ const { cv } = Astro.props;
           ))}
         </div>
       </section>
-    ))}
+    )}
+
+    <!-- ── EXPERIENCIA ── -->
+    {cv.experiencia && cv.experiencia.length > 0 && (
+      <section style="margin-bottom: 6rem;">
+        <h2 class="font-sans font-bold text-sm tracking-widest uppercase" style="margin-bottom: 1rem;">Experiencia</h2>
+        <div style="height: 2px; background: #0A0A0A; margin-bottom: 3rem;"></div>
+
+        <div class="grid grid-cols-3 gap-8">
+          {cv.experiencia.map((entry) => (
+            <div>
+              <p class="font-sans text-xs text-[var(--color-text-secondary)] mb-2">{entry.year}</p>
+              <h3 class="font-sans text-sm font-bold text-[var(--color-text)]">{entry.company}</h3>
+              <p class="font-sans text-sm text-[var(--color-text)] mt-0.5">{entry.role}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- ── HABILIDADES / INTERESES ── -->
+    {((cv.habilidades && cv.habilidades.length > 0) || (cv.intereses && cv.intereses.length > 0)) && (
+      <section>
+        <h2 class="font-sans font-bold text-sm tracking-widest uppercase" style="margin-bottom: 1rem;">Habilidades / Intereses</h2>
+        <div style="height: 2px; background: #0A0A0A; margin-bottom: 3rem;"></div>
+
+        <div class="grid grid-cols-2 gap-16">
+          <!-- Habilidades -->
+          {cv.habilidades && cv.habilidades.length > 0 && (
+            <ul class="space-y-2">
+              {cv.habilidades.map((item) => (
+                <li class="font-sans text-sm text-[var(--color-text)] flex items-start gap-2">
+                  <span class="mt-1.5 w-1 h-1 rounded-full bg-[var(--color-text)] shrink-0"></span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          )}
+          <!-- Intereses -->
+          {cv.intereses && cv.intereses.length > 0 && (
+            <ul class="space-y-2">
+              {cv.intereses.map((item) => (
+                <li class="font-sans text-sm text-[var(--color-text)] flex items-start gap-2">
+                  <span class="mt-1.5 w-1 h-1 rounded-full bg-[var(--color-text)] shrink-0"></span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </section>
+    )}
+
+    <!-- Botones descarga -->
+    <div style="margin-top: 6rem; padding-top: 3rem; border-top: 1px solid var(--color-border);">
+      <div class="flex justify-center gap-4">
+        <a
+          href={cvPdf}
+          download
+          class="font-sans text-xs font-medium tracking-widest uppercase text-white bg-black rounded-full hover:opacity-80 transition-opacity duration-200"
+          style="padding: 0.6rem 1.5rem;"
+        >
+          {lang === 'en' ? 'Download CV' : 'Descargar CV'}
+        </a>
+        <a
+          href={portfolioPdf}
+          download
+          class="font-sans text-xs font-medium tracking-widest uppercase text-white bg-black rounded-full hover:opacity-80 transition-opacity duration-200"
+          style="padding: 0.6rem 1.5rem;"
+        >
+          {lang === 'en' ? 'Download Portfolio' : 'Descargar Portafolio'}
+        </a>
+      </div>
+    </div>
+
+  </div>
   </div>
 </div>
