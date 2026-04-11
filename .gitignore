@@ -28,6 +28,9 @@ sanity/.sanity/
 # macOS-specific files
 .DS_Store
 
+# Private documentation
+GUIA_WEB.md
+
 # jetbrains setting folder
 .idea/
 
