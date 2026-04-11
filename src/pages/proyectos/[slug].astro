@@ -84,7 +84,7 @@ const hasHero = project.heroVideo?.asset?.url || coverImageUrl;
       <!-- Descripción (portable text) -->
       {project.description && project.description.length > 0 && (
         <div class="prose-project mb-16">
-          <PortableText value={project.description} components={portableTextComponents} client:load />
+          <PortableText value={project.description} components={portableTextComponents} />
         </div>
       )}
 
