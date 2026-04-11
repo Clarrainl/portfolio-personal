@@ -16,7 +16,7 @@ export async function sendContactEmail(data: ContactData) {
 
   const fromEmail = import.meta.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
 
-  const result = await resend.emails.send({
+  const { data, error } = await resend.emails.send({
     from: `Portfolio <${fromEmail}>`,
     to: [contactEmail],
     replyTo: email,
@@ -49,5 +49,9 @@ export async function sendContactEmail(data: ContactData) {
     `,
   });
 
-  return result;
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
 }
