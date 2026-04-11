@@ -55,14 +55,14 @@ export default function CategoryFilter({ projects, lang = 'es' }: Props) {
   return (
     <div>
       {/* Filter buttons — full viewport width, centered on same axis as nav */}
-      <div className="w-full flex flex-wrap justify-center gap-3" style={{ marginBottom: '2rem' }}>
+      <div className="w-full flex flex-wrap justify-center gap-1.5 md:gap-3" style={{ marginBottom: '2rem' }}>
         {categories.map((cat) => (
           <button
             key={cat}
             onClick={() => handleCategoryChange(cat)}
-            style={{ padding: '0.25rem 0.9rem' }}
+            style={{ padding: '0.2rem 0.6rem' }}
             className={[
-              'text-[10px] font-medium tracking-widest uppercase rounded-full transition-all duration-200',
+              'text-[9px] md:text-[10px] font-medium tracking-widest uppercase rounded-full transition-all duration-200',
               active === cat
                 ? 'bg-[#0A0A0A] text-white'
                 : 'bg-[#0A0A0A] text-white/50 hover:text-white',

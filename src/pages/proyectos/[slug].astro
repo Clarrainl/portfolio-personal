@@ -8,14 +8,15 @@ import type { Project } from '../../types/index.js';
 
 export async function getStaticPaths() {
   const projects = await getProjects();
-  return projects.map((project, index) => ({
+  const valid = projects.filter(p => p.slug?.current);
+  return valid.map((project, index) => ({
     params: { slug: project.slug.current },
     props: {
       prevProject: index > 0
-        ? { title: projects[index - 1].title, slug: projects[index - 1].slug.current }
+        ? { title: valid[index - 1].title, slug: valid[index - 1].slug.current }
         : null,
-      nextProject: index < projects.length - 1
-        ? { title: projects[index + 1].title, slug: projects[index + 1].slug.current }
+      nextProject: index < valid.length - 1
+        ? { title: valid[index + 1].title, slug: valid[index + 1].slug.current }
         : null,
     },
   }));
@@ -79,16 +80,22 @@ const hasHero = project.heroVideo?.asset?.url || coverImageUrl;
   )}
 
   <!-- ── CUERPO DEL PROYECTO ── -->
-  <div class="px-6 lg:px-12" style="padding-top: 6rem; padding-bottom: 4rem;">
+  <div class="px-6 lg:px-12" style={`padding-top: ${hasHero ? '1rem' : '7rem'}; padding-bottom: 4rem;`}>
     <div style="width: 80%; margin: 0 auto;">
-      <div class="grid grid-cols-2 items-start" style="gap: 0;">
 
-        <!-- Columna izquierda: solo título -->
+      <!-- Mobile: título centrado arriba -->
+      <div class="md:hidden text-center" style="margin-bottom: 1rem;">
+        <h1 class="font-display text-3xl font-bold leading-tight">{project.title}</h1>
+      </div>
+
+      <div class="hidden md:grid grid-cols-2 items-start" style="gap: 0;">
+
+        <!-- Columna izquierda: solo título (desktop) -->
         <div style="padding-right: 4rem; border-right: 2px solid var(--color-border);">
           <h1 class="font-display text-5xl md:text-6xl font-bold leading-tight text-right">{project.title}</h1>
         </div>
 
-        <!-- Columna derecha: descripción + info -->
+        <!-- Columna derecha: descripción + info (desktop) -->
         <div style="padding-left: 4rem;">
 
       <!-- Descripción (portable text) -->
@@ -139,8 +146,57 @@ const hasHero = project.heroVideo?.asset?.url || coverImageUrl;
         </div>
       )}
 
-        </div> <!-- fin columna derecha -->
-      </div> <!-- fin grid -->
+        </div> <!-- fin columna derecha (desktop) -->
+      </div> <!-- fin grid desktop -->
+
+      <!-- Mobile: descripción + info debajo del título -->
+      <div class="md:hidden" style="padding-left: 0.25rem; padding-right: 0.25rem; padding-top: 1rem;">
+        {project.description && project.description.length > 0 && (
+          <div class="prose-project-sm mb-10">
+            <PortableText value={project.description} components={portableTextComponents} />
+          </div>
+        )}
+        {(project.authors?.length || project.course || project.institution || project.year || project.moreInfoUrl) && (
+          <div style="padding-top: 1rem; border-top: 2px solid var(--color-border);">
+            <h3 class="font-sans text-xs tracking-widest uppercase font-bold text-[var(--color-text)]" style="margin-bottom: 1rem;">Información del proyecto</h3>
+            <ul class="space-y-4">
+              {project.authors && project.authors.length > 0 && (
+                <li class="font-sans text-xs">
+                  <span class="font-semibold">Autores</span>
+                  <span class="text-[var(--color-text-secondary)] ml-3">{project.authors.join(', ')}</span>
+                </li>
+              )}
+              {project.course && (
+                <li class="font-sans text-xs">
+                  <span class="font-semibold">Curso</span>
+                  <span class="text-[var(--color-text-secondary)] ml-3">{project.course}</span>
+                </li>
+              )}
+              {project.institution && (
+                <li class="font-sans text-xs">
+                  <span class="font-semibold">Institución</span>
+                  <span class="text-[var(--color-text-secondary)] ml-3">{project.institution}</span>
+                </li>
+              )}
+              <li class="font-sans text-xs">
+                <span class="font-semibold">Año</span>
+                <span class="text-[var(--color-text-secondary)] ml-3">{project.year}</span>
+              </li>
+            </ul>
+            {project.moreInfoUrl && (
+              <a
+                href={project.moreInfoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-block mt-6 font-sans text-xs tracking-widest uppercase border-b border-[var(--color-text)] pb-0.5 hover:text-[var(--color-text-secondary)] transition-colors duration-200"
+              >
+                Más información →
+              </a>
+            )}
+          </div>
+        )}
+      </div>
+
     </div>
   </div>
 
@@ -263,5 +319,18 @@ const hasHero = project.heroVideo?.asset?.url || coverImageUrl;
   .prose-project :global(img) {
     width: 100%;
     margin: 2rem 0;
+  }
+
+  .prose-project-sm :global(p) {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    line-height: 1.75;
+    color: var(--color-text-secondary);
+    margin-bottom: 1rem;
+    text-align: justify;
+  }
+  .prose-project-sm :global(strong) {
+    color: var(--color-text);
+    font-weight: 600;
   }
 </style>

@@ -22,7 +22,7 @@ const {
 <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
   <VideoBackground mp4="/hero.mp4" />
 
-  <!-- Portafolio + Name stacked, scrolls with hero -->
+  <!-- Desktop: Portafolio + Name stacked -->
   <div
     class="absolute hidden md:flex flex-col items-center gap-1"
     style="top: 5rem; left: 50%; transform: translateX(-50%); white-space: nowrap; z-index: 40;"
@@ -38,6 +38,19 @@ const {
     </a>
   </div>
 
+  <!-- Mobile: nombre centrado con espacio del borde superior -->
+  <div
+    class="absolute flex md:hidden flex-col items-center gap-1"
+    style="top: 7rem; left: 50%; transform: translateX(-50%); white-space: nowrap; z-index: 40;"
+  >
+    <a
+      href={lang === 'es' ? '/' : '/en'}
+      class="font-display text-xl font-light tracking-widest text-white no-underline drop-shadow-sm"
+    >
+      Charlie Larraín L.
+    </a>
+  </div>
+
   <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-white/40">
     <a
       href={ctaHref}
@@ -46,7 +59,7 @@ const {
     >
       {ctaText}
     </a>
-    <p class="text-xs font-medium tracking-[0.2em] uppercase text-white/60">{tagline}</p>
+    <p class="text-[10px] md:text-xs font-medium tracking-[0.15em] uppercase text-white/60 whitespace-nowrap">{tagline}</p>
     <span class="text-xs tracking-wider uppercase text-center px-4">{lang === 'en' ? 'Scroll to know more' : 'Scroll para saber más'}</span>
     <div class="w-px h-12 bg-white/20 relative overflow-hidden">
       <div class="absolute top-0 left-0 w-full bg-white/60 h-1/2 animate-[scroll-line_2s_ease-in-out_infinite]"></div>

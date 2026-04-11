@@ -17,9 +17,9 @@ const portfolioPdf = lang === 'en'
   : '/cv/Portfolio_Carlos%20Larra%C3%ADn%20L_ES.pdf';
 ---
 
-<div class="px-6 lg:px-12" style="padding-top: 4rem; padding-bottom: 8rem;">
+<div class="px-6 lg:px-12" style="padding-top: 1.5rem; padding-bottom: 8rem;">
   <div style="width: 80%; margin: 0 auto;">
-  <div style="margin-left: 50%;">
+  <div class="md:ml-[50%]">
 
     <!-- ── EDUCACIÓN ── -->
     {cv.educacion && cv.educacion.length > 0 && (
@@ -29,15 +29,15 @@ const portfolioPdf = lang === 'en'
 
         <div style="display: flex; flex-direction: column; gap: 2rem;">
           {cv.educacion.map((entry) => (
-            <div class="grid grid-cols-4 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-8">
               <!-- Años -->
-              <div class="col-span-1">
+              <div class="md:col-span-1">
                 <p class="font-sans text-sm text-[var(--color-text-secondary)]">
                   {entry.yearStart}{entry.yearEnd ? ` – ${entry.yearEnd}` : ''}
                 </p>
               </div>
               <!-- Contenido -->
-              <div class="col-span-3">
+              <div class="md:col-span-3">
                 <h3 class="font-sans text-sm font-bold text-[var(--color-text)]">{entry.program}</h3>
                 <p class="font-sans text-sm text-[var(--color-text)] mt-0.5">
                   {entry.institution}{entry.city ? `, ${entry.city}` : ''}
@@ -60,7 +60,7 @@ const portfolioPdf = lang === 'en'
         <h2 class="font-sans font-bold text-sm tracking-widest uppercase" style="margin-bottom: 1rem;">Experiencia</h2>
         <div style="height: 2px; background: #0A0A0A; margin-bottom: 3rem;"></div>
 
-        <div class="grid grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
           {cv.experiencia.map((entry) => (
             <div>
               <p class="font-sans text-xs text-[var(--color-text-secondary)] mb-2">{entry.year}</p>
@@ -78,7 +78,7 @@ const portfolioPdf = lang === 'en'
         <h2 class="font-sans font-bold text-sm tracking-widest uppercase" style="margin-bottom: 1rem;">Habilidades / Intereses</h2>
         <div style="height: 2px; background: #0A0A0A; margin-bottom: 3rem;"></div>
 
-        <div class="grid grid-cols-2 gap-16">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
           <!-- Habilidades -->
           {cv.habilidades && cv.habilidades.length > 0 && (
             <ul class="space-y-2">
