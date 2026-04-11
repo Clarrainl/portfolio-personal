@@ -16,7 +16,7 @@ export async function sendContactEmail(data: ContactData) {
 
   const fromEmail = import.meta.env.RESEND_FROM_EMAIL || 'noreply@charlielarrain.com';
 
-  const { data, error } = await resend.emails.send({
+  const { data: result, error } = await resend.emails.send({
     from: `Portfolio <${fromEmail}>`,
     to: [contactEmail],
     replyTo: email,
@@ -53,5 +53,5 @@ export async function sendContactEmail(data: ContactData) {
     throw new Error(error.message);
   }
 
-  return data;
+  return result;
 }
