@@ -1,9 +1,15 @@
 ---
+import { getLangFromPath } from '../../lib/i18n.js';
+
 const currentYear = new Date().getFullYear();
+const lang = getLangFromPath(Astro.url.pathname);
+
+const contactHref = lang === 'en' ? '/en/contact' : '/contacto';
+const contactLabel = lang === 'en' ? 'Contact' : 'Contacto';
 
 const socialLinks = [
-  { label: 'LinkedIn', href: 'https://linkedin.com' },
-  { label: 'Instagram', href: 'https://instagram.com' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/carlos-larrain-lihn-298199208/' },
+  { label: 'Instagram', href: 'https://www.instagram.com/carlos_larrainl/' },
 ];
 ---
 
@@ -29,10 +35,10 @@ const socialLinks = [
           </a>
         ))}
         <a
-          href="/contacto"
+          href={contactHref}
           class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors duration-200"
         >
-          Contacto
+          {contactLabel}
         </a>
       </div>
     </div>
