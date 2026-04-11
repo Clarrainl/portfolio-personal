@@ -71,7 +71,7 @@ export default function ContactForm({ lang = 'es' }: { lang?: 'es' | 'en' }) {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-xl" noValidate>
+    <form onSubmit={handleSubmit(onSubmit)} className="max-w-xl" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }} noValidate>
       {/* Honeypot field — hidden from users, visible to bots */}
       <div
         aria-hidden="true"
@@ -91,10 +91,11 @@ export default function ContactForm({ lang = 'es' }: { lang?: 'es' | 'en' }) {
           type="text"
           autoComplete="name"
           className={[
-            'w-full px-4 py-3 border text-sm bg-transparent outline-none transition-colors duration-200',
+            'w-full border rounded-xl text-sm bg-transparent outline-none transition-colors duration-200',
             'focus:border-[#0A0A0A] placeholder:text-[#6B6B6B]/50',
             errors.name ? 'border-[#D94F4F]' : 'border-[#E5E2DD]',
           ].join(' ')}
+          style={{ padding: '12px 16px' }}
           placeholder={labels.namePlaceholder}
           {...register('name')}
         />
@@ -112,7 +113,8 @@ export default function ContactForm({ lang = 'es' }: { lang?: 'es' | 'en' }) {
           id="company"
           type="text"
           autoComplete="organization"
-          className="w-full px-4 py-3 border border-[#E5E2DD] text-sm bg-transparent outline-none transition-colors duration-200 focus:border-[#0A0A0A] placeholder:text-[#6B6B6B]/50"
+          className="w-full border border-[#E5E2DD] rounded-xl text-sm bg-transparent outline-none transition-colors duration-200 focus:border-[#0A0A0A] placeholder:text-[#6B6B6B]/50"
+          style={{ padding: '12px 16px' }}
           placeholder={labels.companyPlaceholder}
           {...register('company')}
         />
@@ -128,10 +130,11 @@ export default function ContactForm({ lang = 'es' }: { lang?: 'es' | 'en' }) {
           type="email"
           autoComplete="email"
           className={[
-            'w-full px-4 py-3 border text-sm bg-transparent outline-none transition-colors duration-200',
+            'w-full border rounded-xl text-sm bg-transparent outline-none transition-colors duration-200',
             'focus:border-[#0A0A0A] placeholder:text-[#6B6B6B]/50',
             errors.email ? 'border-[#D94F4F]' : 'border-[#E5E2DD]',
           ].join(' ')}
+          style={{ padding: '12px 16px' }}
           placeholder={labels.emailPlaceholder}
           {...register('email')}
         />
@@ -149,10 +152,11 @@ export default function ContactForm({ lang = 'es' }: { lang?: 'es' | 'en' }) {
           id="message"
           rows={5}
           className={[
-            'w-full px-4 py-3 border text-sm bg-transparent outline-none transition-colors duration-200 resize-none',
+            'w-full border rounded-xl text-sm bg-transparent outline-none transition-colors duration-200 resize-none',
             'focus:border-[#0A0A0A] placeholder:text-[#6B6B6B]/50',
             errors.message ? 'border-[#D94F4F]' : 'border-[#E5E2DD]',
           ].join(' ')}
+          style={{ padding: '12px 16px' }}
           placeholder={labels.messagePlaceholder}
           {...register('message')}
         />
@@ -180,10 +184,12 @@ export default function ContactForm({ lang = 'es' }: { lang?: 'es' | 'en' }) {
         type="submit"
         disabled={status === 'loading'}
         className={[
-          'w-full py-4 text-sm font-medium tracking-[0.2em] uppercase transition-all duration-200',
+          'w-full py-3 text-sm font-medium tracking-[0.2em] uppercase rounded-full transition-all duration-200',
           status === 'loading'
             ? 'bg-[#6B6B6B] text-white cursor-not-allowed'
-            : 'bg-[#0A0A0A] text-white hover:bg-[#8B7355]',
+            : status === 'success'
+              ? 'bg-[#b7e4c7] text-[#1a4731]'
+              : 'bg-[#0A0A0A] text-white hover:bg-white hover:text-[#0A0A0A] border border-[#0A0A0A]',
         ].join(' ')}
       >
         {status === 'loading' ? labels.sending : labels.submit}

@@ -9,17 +9,18 @@ import ContactForm from '../components/ui/ContactForm.tsx';
 >
   <div class="pt-24">
     <!-- Page Header -->
-    <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-16 border-b border-[var(--color-border)]">
-      <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-4">Hablemos</p>
-      <h1 class="font-display text-6xl font-light">Contacto</h1>
+    <div class="px-6 lg:px-12 text-center" style="padding-top: 5rem; padding-bottom: 2rem;">
+      <h1 class="font-sans font-light uppercase tracking-widest text-6xl">Contacto</h1>
+      <div style="height: 1px; background: #555; margin: 2.5rem auto 0; width: 80%;"></div>
     </div>
 
     <!-- Content -->
-    <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-16">
+    <div class="px-6 lg:px-12" style="padding-top: 4rem; padding-bottom: 4rem;">
+      <div style="width: 80%; margin: 0 auto;">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
         <!-- Form -->
         <div>
-          <p class="text-[var(--color-text-secondary)] mb-10 leading-relaxed">
+          <p class="text-[var(--color-text-secondary)] leading-relaxed max-w-xl" style="margin-bottom: 2rem;">
             ¿Tienes un proyecto en mente o quieres conocer más sobre mi trabajo?
             Completa el formulario y te responderé en menos de 48 horas.
           </p>
@@ -28,40 +29,49 @@ import ContactForm from '../components/ui/ContactForm.tsx';
 
         <!-- Contact Info -->
         <div class="lg:pt-4">
-          <div class="space-y-8 border-l border-[var(--color-border)] pl-8">
+          <div class="border-l border-[var(--color-border)]" style="padding-left: 1rem; display: flex; flex-direction: column; gap: 1rem;">
             <div>
-              <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-3">Email</p>
+              <p class="font-sans text-xs font-bold tracking-widest uppercase mb-2">Email</p>
               <a
                 href="mailto:clarrainlihn@gmail.com"
-                class="text-sm font-medium hover:text-[var(--color-accent)] transition-colors duration-200"
+                class="font-sans text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors duration-200"
               >
                 clarrainlihn@gmail.com
               </a>
             </div>
 
             <div>
-              <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-3">Disponibilidad</p>
-              <p class="text-sm text-[var(--color-text-secondary)]">
+              <p class="font-sans text-xs font-bold tracking-widest uppercase mb-2">Disponibilidad</p>
+              <p class="font-sans text-sm text-[var(--color-text-secondary)]">
                 Disponible para proyectos freelance,<br />
                 colaboraciones y posiciones full-time.
               </p>
             </div>
 
             <div>
-              <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-3">Redes</p>
+              <p class="font-sans text-xs font-bold tracking-widest uppercase mb-2">Redes</p>
               <div class="flex flex-col gap-2">
                 <a
-                  href="https://linkedin.com"
+                  href="https://www.linkedin.com/in/carlos-larrain-lihn-298199208/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors duration-200"
+                  class="font-sans text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors duration-200"
                 >
                   LinkedIn →
+                </a>
+                <a
+                  href="https://www.instagram.com/carlos_larrainl/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="font-sans text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition-colors duration-200"
+                >
+                  Instagram →
                 </a>
               </div>
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   </div>
