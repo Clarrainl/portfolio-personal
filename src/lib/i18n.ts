@@ -135,21 +135,24 @@ export function t(lang: Lang, key: UIKey): string {
 
 // Route equivalents between languages
 export function getAlternatePath(currentPath: string, targetLang: Lang): string {
+  // Normalize: strip trailing slash (except root "/")
+  const path = currentPath.length > 1 ? currentPath.replace(/\/$/, '') : currentPath;
+
   if (targetLang === 'en') {
-    if (currentPath === '/') return '/en';
-    if (currentPath.startsWith('/proyectos/')) return '/en/projects/' + currentPath.replace('/proyectos/', '');
-    if (currentPath === '/proyectos') return '/en/projects';
-    if (currentPath === '/sobre-mi') return '/en/about';
-    if (currentPath === '/cv') return '/en/cv';
-    if (currentPath === '/contacto') return '/en/contact';
+    if (path === '/') return '/en';
+    if (path.startsWith('/proyectos/')) return '/en/projects/' + path.replace('/proyectos/', '');
+    if (path === '/proyectos') return '/en/projects';
+    if (path === '/sobre-mi') return '/en/about';
+    if (path === '/cv') return '/en/cv';
+    if (path === '/contacto') return '/en/contact';
     return '/en';
   } else {
-    if (currentPath === '/en' || currentPath === '/en/') return '/';
-    if (currentPath.startsWith('/en/projects/')) return '/proyectos/' + currentPath.replace('/en/projects/', '');
-    if (currentPath === '/en/projects') return '/proyectos';
-    if (currentPath === '/en/about') return '/sobre-mi';
-    if (currentPath === '/en/cv') return '/cv';
-    if (currentPath === '/en/contact') return '/contacto';
+    if (path === '/en') return '/';
+    if (path.startsWith('/en/projects/')) return '/proyectos/' + path.replace('/en/projects/', '');
+    if (path === '/en/projects') return '/proyectos';
+    if (path === '/en/about') return '/sobre-mi';
+    if (path === '/en/cv') return '/cv';
+    if (path === '/en/contact') return '/contacto';
     return '/';
   }
 }
