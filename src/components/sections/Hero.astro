@@ -22,25 +22,23 @@ const {
 <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
   <VideoBackground mp4="/hero.mp4" />
 
-  <!-- Desktop: Portafolio + Name stacked -->
+  <!-- Desktop: Name + tagline -->
   <div
-    class="absolute hidden md:flex flex-col items-center gap-1"
+    class="absolute hidden md:flex flex-col items-center gap-2"
     style="top: 5rem; left: 50%; transform: translateX(-50%); white-space: nowrap; z-index: 40;"
   >
-    <span class="font-display text-xl font-light tracking-widest text-white drop-shadow-sm">
-      {name}
-    </span>
     <a
       href={lang === 'es' ? '/' : '/en'}
       class="font-display text-xl font-light tracking-widest text-white/70 no-underline drop-shadow-sm"
     >
       Charlie Larraín L.
     </a>
+    <p class="text-[10px] font-medium tracking-[0.15em] uppercase text-white/50">{tagline}</p>
   </div>
 
-  <!-- Mobile: nombre centrado con espacio del borde superior -->
+  <!-- Mobile: nombre + tagline -->
   <div
-    class="absolute flex md:hidden flex-col items-center gap-1"
+    class="absolute flex md:hidden flex-col items-center gap-2"
     style="top: 7rem; left: 50%; transform: translateX(-50%); white-space: nowrap; z-index: 40;"
   >
     <a
@@ -49,6 +47,7 @@ const {
     >
       Charlie Larraín L.
     </a>
+    <p class="text-[9px] font-medium tracking-[0.15em] uppercase text-white/60">{tagline}</p>
   </div>
 
   <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-white/40">
@@ -59,7 +58,6 @@ const {
     >
       {ctaText}
     </a>
-    <p class="text-[10px] md:text-xs font-medium tracking-[0.15em] uppercase text-white/60 whitespace-nowrap">{tagline}</p>
     <span class="text-xs tracking-wider uppercase text-center px-4">{lang === 'en' ? 'Scroll to know more' : 'Scroll para saber más'}</span>
     <div class="w-px h-12 bg-white/20 relative overflow-hidden">
       <div class="absolute top-0 left-0 w-full bg-white/60 h-1/2 animate-[scroll-line_2s_ease-in-out_infinite]"></div>
