@@ -1,40 +1,60 @@
 ---
-import BaseLayout from '../components/layout/BaseLayout.astro';
-import Hero from '../components/sections/Hero.astro';
-import { t } from '../lib/i18n.js';
-import { getAbout, urlFor } from '../lib/sanity.js';
+import BaseLayout from '../../components/layout/BaseLayout.astro';
+import Hero from '../../components/sections/Hero.astro';
+import FeaturedProjects from '../../components/sections/FeaturedProjects.astro';
+import { t } from '../../lib/i18n.js';
+import { getAbout, urlFor } from '../../lib/sanity.js';
 
-const lang = 'en';
+const lang = 'es';
 const about = await getAbout();
 ---
 
-<BaseLayout title="Home" description="Portfolio of an Architect with a Master's in Robotics and Advanced Construction and a Postgraduate in 1:1 Scale 3D Printing.">
-  <Hero name="PORTFOLIO" tagline={t(lang, 'hero.tagline')} ctaText={t(lang, 'hero.cta')} ctaHref="/projects" lang={lang} />
+<BaseLayout
+  title="Inicio"
+  description="Portfolio de Arquitecto con Máster en Robótica y Construcción Avanzada y Postgrado en Impresión 3D."
+>
+  <Hero
+    name="PORTAFOLIO"
+    tagline={t(lang, 'hero.tagline')}
+    ctaText={t(lang, 'hero.cta')}
+    ctaHref="/es/proyectos"
+    lang={lang}
+  />
 
   <!-- Mini About -->
   <section class="fade-in-section bg-white flex items-start md:items-center" style="min-height: 100vh; width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; padding-top: 5rem; padding-bottom: 4rem;">
     <div class="w-full" style="max-width: 56rem; margin: 0 auto; padding-left: 2.5rem; padding-right: 2.5rem;">
     <div class="flex flex-col md:flex-row items-stretch gap-10 md:gap-0">
+      <!-- Left: text -->
       <div class="flex-1 flex flex-col justify-center">
         <div style="padding-right: 3rem;">
           <p class="text-sm md:text-xs text-[var(--color-text)] tracking-[0.3em] mb-4 md:mb-4 font-medium" style="margin-bottom: 1rem;">{t(lang, 'home.about.label')}</p>
           <h2 class="font-display md:text-4xl text-3xl font-light md:mb-6" style="margin-bottom: 1rem;">{t(lang, 'home.about.title')}</h2>
           <p class="text-[var(--color-text-secondary)] leading-relaxed mb-8 text-justify text-sm">{t(lang, 'home.about.body')}</p>
-          <a href="/projects" class="inline-flex items-center gap-2 text-sm font-medium tracking-wide border-b border-[var(--color-text)] pb-0.5 hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors duration-200">
+          <a
+            href="/es/proyectos"
+            class="inline-flex items-center gap-2 text-sm font-medium tracking-wide border-b border-[var(--color-text)] pb-0.5 hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors duration-200"
+          >
             {t(lang, 'home.about.link')}
           </a>
         </div>
       </div>
+      <!-- Vertical divider -->
       <div class="hidden md:flex w-px self-stretch items-stretch" style="padding-top: 3rem; padding-bottom: 3rem;">
         <div class="w-px flex-1 bg-[var(--color-accent)]"></div>
       </div>
+      <!-- Right: photo -->
       <div class="flex-1 flex items-center" style="padding-top: 2rem; padding-bottom: 2rem;">
         <div style="padding-left: 3rem;" class="w-full">
         {about?.photo ? (
-          <img src={urlFor(about.photo).width(600).height(800).fit('crop').url()} alt={about.photo.alt || 'Professional photo'} class="w-full aspect-[3/4] object-cover" />
+          <img
+            src={urlFor(about.photo).width(600).height(800).fit('crop').url()}
+            alt={about.photo.alt || 'Foto profesional'}
+            class="w-full aspect-[3/4] object-cover"
+          />
         ) : (
           <div class="w-full aspect-[3/4] bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center">
-            <p class="text-sm text-[var(--color-text-secondary)]">Professional photo</p>
+            <p class="text-sm text-[var(--color-text-secondary)]">Foto profesional</p>
           </div>
         )}
         </div>
@@ -43,14 +63,18 @@ const about = await getAbout();
     </div>
   </section>
 
-  <!-- CTA -->
+  <!-- Contact CTA -->
   <section class="bg-[var(--color-surface)] fade-in-section" style="width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; padding-top: 2rem; padding-bottom: 2rem;">
     <div class="text-center px-6" style="max-width: 56rem; margin: 0 auto;">
       <p class="text-xs text-[var(--color-text-secondary)] tracking-[0.3em] uppercase mb-6">{t(lang, 'home.cta.label')}</p>
       <h2 class="font-display text-5xl font-light mb-8">{t(lang, 'home.cta.title')}</h2>
       <p class="text-[var(--color-text-secondary)]" style="margin-bottom: 0.25rem; max-width: 32rem; margin-left: auto; margin-right: auto; text-align: center;">{t(lang, 'home.cta.body')}</p>
       <p class="text-[var(--color-text-secondary)]" style="margin-bottom: 1.5rem; max-width: 32rem; margin-left: auto; margin-right: auto; text-align: center;">{t(lang, 'home.cta.body2')}</p>
-      <a href="/contact" class="inline-block rounded-full border border-[var(--color-border)] text-[var(--color-text)] text-sm font-medium tracking-wide transition-colors duration-200 hover:bg-[var(--color-text)] hover:text-white hover:border-[var(--color-text)]" style="padding: 0.85rem 3rem;">
+      <a
+        href="/es/contacto"
+        class="inline-block rounded-full border border-[var(--color-border)] text-[var(--color-text)] text-sm font-medium tracking-wide transition-colors duration-200 hover:bg-[var(--color-text)] hover:text-white hover:border-[var(--color-text)]"
+        style="padding: 0.85rem 3rem;"
+      >
         {t(lang, 'home.cta.button')}
       </a>
     </div>

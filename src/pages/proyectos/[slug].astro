@@ -123,10 +123,19 @@ const hasHero = project.heroVideo?.asset?.url || coverImageUrl;
               </li>
             )}
             {project.institution && (
-              <li class="font-sans text-sm">
-                <span class="font-semibold">Institución</span>
-                <span class="text-[var(--color-text-secondary)] ml-3">{project.institution}</span>
-              </li>
+              Array.isArray(project.institution)
+                ? project.institution.map((lugar: any) => (
+                    <li class="font-sans text-sm" key={lugar._key}>
+                      <span class="font-semibold">{lugar.type === 'oficina' ? 'Oficina' : 'Institución'}</span>
+                      <span class="text-[var(--color-text-secondary)] ml-3">{lugar.name}</span>
+                    </li>
+                  ))
+                : (
+                    <li class="font-sans text-sm">
+                      <span class="font-semibold">Institución</span>
+                      <span class="text-[var(--color-text-secondary)] ml-3">{project.institution as any}</span>
+                    </li>
+                  )
             )}
             <li class="font-sans text-sm">
               <span class="font-semibold">Año</span>
@@ -173,10 +182,19 @@ const hasHero = project.heroVideo?.asset?.url || coverImageUrl;
                 </li>
               )}
               {project.institution && (
-                <li class="font-sans text-xs">
-                  <span class="font-semibold">Institución</span>
-                  <span class="text-[var(--color-text-secondary)] ml-3">{project.institution}</span>
-                </li>
+                Array.isArray(project.institution)
+                  ? project.institution.map((lugar: any) => (
+                      <li class="font-sans text-xs" key={lugar._key}>
+                        <span class="font-semibold">{lugar.type === 'oficina' ? 'Oficina' : 'Institución'}</span>
+                        <span class="text-[var(--color-text-secondary)] ml-3">{lugar.name}</span>
+                      </li>
+                    ))
+                  : (
+                      <li class="font-sans text-xs">
+                        <span class="font-semibold">Institución</span>
+                        <span class="text-[var(--color-text-secondary)] ml-3">{project.institution as any}</span>
+                      </li>
+                    )
               )}
               <li class="font-sans text-xs">
                 <span class="font-semibold">Año</span>

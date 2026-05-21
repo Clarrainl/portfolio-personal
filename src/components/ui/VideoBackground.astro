@@ -8,7 +8,7 @@ interface Props {
 const { webm, mp4, poster } = Astro.props;
 ---
 
-<div class="absolute inset-0 overflow-hidden">
+<div class="absolute inset-0 overflow-hidden bg-black">
   {(webm || mp4) ? (
     <video
       autoplay
@@ -16,7 +16,7 @@ const { webm, mp4, poster } = Astro.props;
       loop
       playsinline
       poster={poster}
-      class="absolute inset-0 w-full h-full object-cover"
+      class="absolute inset-0 w-full h-full object-contain md:object-cover"
     >
       {webm && <source src={webm} type="video/webm" />}
       {mp4 && <source src={mp4} type="video/mp4" />}

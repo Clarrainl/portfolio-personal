@@ -11,8 +11,9 @@ const categoryLabelsEs: Record<string, string> = {
   arquitectura: 'Arquitectura',
   robotica: 'Robótica',
   impresion3d: 'Impresión 3D',
-  escultura: 'Escultura',
+  ceramica: 'Cerámica',
   docencia: 'Docencia',
+  fotografia: 'Fotografía',
 };
 
 const categoryLabelsEn: Record<string, string> = {
@@ -20,14 +21,26 @@ const categoryLabelsEn: Record<string, string> = {
   arquitectura: 'Architecture',
   robotica: 'Robotics',
   impresion3d: '3D Printing',
-  escultura: 'Sculpture',
+  ceramica: 'Ceramics',
   docencia: 'Teaching',
+  fotografia: 'Photography',
 };
+
+function normalizeKey(str: string): string {
+  return str.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+}
+
+function getLabel(labels: Record<string, string>, cat: string): string {
+  return labels[cat] ?? labels[normalizeKey(cat)] ?? cat;
+}
 
 function buildImageUrl(coverImage: Project['coverImage'] | undefined): string | null {
   if (!coverImage?.asset?._ref) return null;
-  // Parse Sanity asset reference: image-abc123-800x600-jpg
-  const ref = coverImage.asset._ref;
+  const ref = coverImage.asset._ref; // image-{id}-{w}x{h}-{format}
+  if (ref.endsWith('-gif')) {
+    const id = ref.replace(/^image-/, '').replace(/-gif$/, '');
+    return `https://cdn.sanity.io/images/zoh6ht03/production/${id}.gif`;
+  }
   const parts = ref.replace('image-', '').split('-');
   const ext = parts.pop();
   const id = parts.join('-');
@@ -41,7 +54,7 @@ export default function CategoryFilter({ projects, lang = 'es' }: Props) {
   const categoryLabels = lang === 'en' ? categoryLabelsEn : categoryLabelsEs;
   const categories = ['all', ...Array.from(new Set(projects.map((p) => p.category)))];
 
-  const filtered = active === 'all' ? projects : projects.filter((p) => p.category === active);
+  const filtered = (active === 'all' ? projects : projects.filter((p) => p.category === active)).filter((p) => p.slug?.current);
 
   function handleCategoryChange(cat: string) {
     if (cat === active) return;
@@ -68,7 +81,7 @@ export default function CategoryFilter({ projects, lang = 'es' }: Props) {
                 : 'bg-[#0A0A0A] text-white/50 hover:text-white',
             ].join(' ')}
           >
-            {categoryLabels[cat] || cat}
+            {getLabel(categoryLabels, cat)}
           </button>
         ))}
       </div>

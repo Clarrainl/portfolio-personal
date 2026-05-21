@@ -8,10 +8,10 @@ const alternateLang: Lang = lang === 'es' ? 'en' : 'es';
 const alternatePath = getAlternatePath(currentPath, alternateLang);
 
 const navLinks = [
-  { href: lang === 'es' ? '/' : '/en',                   label: t(lang, 'nav.home') },
-  { href: lang === 'es' ? '/proyectos' : '/en/projects', label: t(lang, 'nav.projects') },
-  { href: lang === 'es' ? '/cv' : '/en/cv',              label: t(lang, 'nav.cv') },
-  { href: lang === 'es' ? '/contacto' : '/en/contact',   label: t(lang, 'nav.contact') },
+  { href: lang === 'es' ? '/es'          : '/',        label: t(lang, 'nav.home') },
+  { href: lang === 'es' ? '/es/proyectos': '/projects', label: t(lang, 'nav.projects') },
+  { href: lang === 'es' ? '/es/cv'       : '/cv',      label: t(lang, 'nav.cv') },
+  { href: lang === 'es' ? '/es/contacto' : '/contact', label: t(lang, 'nav.contact') },
 ];
 ---
 
@@ -54,7 +54,7 @@ const navLinks = [
             style="padding: 0.35rem 0.75rem;"
           >ES</a>
           <a
-            href={lang === 'en' ? '#' : getAlternatePath(currentPath, 'en')}
+            href={lang === 'es' ? getAlternatePath(currentPath, 'en') : '#'}
             class:list={['flex items-center justify-center text-xs font-medium tracking-wide transition-colors duration-150', lang === 'en' ? 'text-white cursor-default' : 'text-white/50 hover:text-white']}
             style="padding: 0.35rem 0.75rem;"
           >EN</a>

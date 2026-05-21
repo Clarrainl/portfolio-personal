@@ -1,14 +1,14 @@
 ---
 import BaseLayout from '../../components/layout/BaseLayout.astro';
 import CVContent from '../../components/sections/CVContent.astro';
-import { getCVEn } from '../../lib/sanity.js';
+import { getCV } from '../../lib/sanity.js';
 
-const cv = await getCVEn();
+const cv = await getCV();
 ---
 
 <BaseLayout
   title="CV"
-  description="Curriculum Vitae — Architect, Robotics, 3D Printing."
+  description="Curriculum Vitae — Arquitecto, Robótica, Impresión 3D."
 >
   <div class="pt-24">
     <div class="px-6 lg:px-12 text-center md:pt-20" style="padding-top: 7rem; padding-bottom: 2rem;">
@@ -17,10 +17,10 @@ const cv = await getCVEn();
     </div>
 
     {cv ? (
-      <CVContent cv={cv} lang="en" />
+      <CVContent cv={cv} lang="es" />
     ) : (
-      <div class="px-6 lg:px-12 py-24 text-center">
-        <p class="text-[var(--color-text-secondary)]">CV not available yet.</p>
+      <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-24 text-center">
+        <p class="text-[var(--color-text-secondary)]">El CV se gestiona desde Sanity Studio.</p>
       </div>
     )}
   </div>

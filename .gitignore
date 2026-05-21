@@ -40,3 +40,5 @@ playwright-report/
 blob-report/
 playwright/.cache/
 public/*.mp4
+
+.vercel

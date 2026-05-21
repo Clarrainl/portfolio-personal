@@ -1,6 +1,6 @@
 import type { Lang } from '../types/index.js';
 
-export const defaultLang: Lang = 'es';
+export const defaultLang: Lang = 'en';
 
 export const ui = {
   es: {
@@ -135,28 +135,41 @@ export function t(lang: Lang, key: UIKey): string {
 
 // Route equivalents between languages
 export function getAlternatePath(currentPath: string, targetLang: Lang): string {
-  // Normalize: strip trailing slash (except root "/")
   const path = currentPath.length > 1 ? currentPath.replace(/\/$/, '') : currentPath;
 
-  if (targetLang === 'en') {
-    if (path === '/') return '/en';
-    if (path.startsWith('/proyectos/')) return '/en/projects/' + path.replace('/proyectos/', '');
-    if (path === '/proyectos') return '/en/projects';
-    if (path === '/sobre-mi') return '/en/about';
-    if (path === '/cv') return '/en/cv';
-    if (path === '/contacto') return '/en/contact';
-    return '/en';
+  if (targetLang === 'es') {
+    // English root → Spanish /es/
+    if (path === '/') return '/es';
+    if (path.startsWith('/projects/')) return '/es/proyectos/' + path.replace('/projects/', '');
+    if (path === '/projects') return '/es/proyectos';
+    if (path === '/about') return '/es/sobre-mi';
+    if (path === '/cv') return '/es/cv';
+    if (path === '/contact') return '/es/contacto';
+    // Legacy /en/ paths
+    if (path === '/en') return '/es';
+    if (path.startsWith('/en/projects/')) return '/es/proyectos/' + path.replace('/en/projects/', '');
+    if (path === '/en/projects') return '/es/proyectos';
+    if (path === '/en/about') return '/es/sobre-mi';
+    if (path === '/en/cv') return '/es/cv';
+    if (path === '/en/contact') return '/es/contacto';
+    return '/es';
   } else {
-    if (path === '/en') return '/';
-    if (path.startsWith('/en/projects/')) return '/proyectos/' + path.replace('/en/projects/', '');
-    if (path === '/en/projects') return '/proyectos';
-    if (path === '/en/about') return '/sobre-mi';
-    if (path === '/en/cv') return '/cv';
-    if (path === '/en/contact') return '/contacto';
+    // Spanish /es/ → English root
+    if (path === '/es') return '/';
+    if (path.startsWith('/es/proyectos/')) return '/projects/' + path.replace('/es/proyectos/', '');
+    if (path === '/es/proyectos') return '/projects';
+    if (path === '/es/sobre-mi') return '/about';
+    if (path === '/es/cv') return '/cv';
+    if (path === '/es/contacto') return '/contact';
+    // Legacy Spanish root paths
+    if (path === '/proyectos') return '/projects';
+    if (path.startsWith('/proyectos/')) return '/projects/' + path.replace('/proyectos/', '');
+    if (path === '/sobre-mi') return '/about';
+    if (path === '/contacto') return '/contact';
     return '/';
   }
 }
 
 export function getLangFromPath(path: string): Lang {
-  return path.startsWith('/en') ? 'en' : 'es';
+  return path.startsWith('/es') ? 'es' : 'en';
 }

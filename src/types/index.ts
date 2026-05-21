@@ -28,7 +28,7 @@ export interface Project {
   title: string;
   titleEn?: string;
   slug: { current: string };
-  category: 'arquitectura' | 'robotica' | 'impresion3d';
+  category: 'arquitectura' | 'robotica' | 'impresion3d' | 'ceramica' | 'docencia' | 'fotografia';
   year: number;
   shortDescription: string;
   shortDescriptionEn?: string;
@@ -39,8 +39,9 @@ export interface Project {
   featured: boolean;
   tags: string[];
   authors?: string[];
+  faculty?: string[];
   course?: string;
-  institution?: string;
+  institution?: { _key: string; name: string; type: 'institucion' | 'oficina' }[];
   moreInfoUrl?: string;
   heroVideo?: { asset: { url: string } };
   videoUrl?: string;

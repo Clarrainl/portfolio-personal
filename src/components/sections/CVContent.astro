@@ -8,6 +8,10 @@ interface Props {
 
 const { cv, lang = 'es' } = Astro.props;
 
+const labels = lang === 'en'
+  ? { education: 'Education', experience: 'Experience', skills: 'Skills / Interests' }
+  : { education: 'Educación', experience: 'Experiencia', skills: 'Habilidades / Intereses' };
+
 const cvPdf = lang === 'en'
   ? '/cv/CV_Carlos%20Larra%C3%ADn%20Lihn_EN.pdf'
   : '/cv/CV_Carlos%20Larra%C3%ADn%20Lihn_ES.pdf';
@@ -18,12 +22,12 @@ const portfolioPdf = lang === 'en'
 ---
 
 <div style="padding-top: 1.5rem; padding-bottom: 8rem;">
-  <div class="cv-content-inner px-6">
+  <div class="cv-content-inner">
 
     <!-- ── EDUCACIÓN ── -->
     {cv.educacion && cv.educacion.length > 0 && (
       <section style="margin-bottom: 6rem;">
-        <h2 class="font-sans font-bold text-sm tracking-widest uppercase" style="margin-bottom: 1rem;">Educación</h2>
+        <h2 class="font-sans font-bold text-sm tracking-widest uppercase" style="margin-bottom: 1rem;">{labels.education}</h2>
         <div style="height: 2px; background: #0A0A0A; margin-bottom: 3rem;"></div>
 
         <div style="display: flex; flex-direction: column; gap: 2rem;">
@@ -56,7 +60,7 @@ const portfolioPdf = lang === 'en'
     <!-- ── EXPERIENCIA ── -->
     {cv.experiencia && cv.experiencia.length > 0 && (
       <section style="margin-bottom: 6rem;">
-        <h2 class="font-sans font-bold text-sm tracking-widest uppercase" style="margin-bottom: 1rem;">Experiencia</h2>
+        <h2 class="font-sans font-bold text-sm tracking-widest uppercase" style="margin-bottom: 1rem;">{labels.experience}</h2>
         <div style="height: 2px; background: #0A0A0A; margin-bottom: 3rem;"></div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
@@ -74,7 +78,7 @@ const portfolioPdf = lang === 'en'
     <!-- ── HABILIDADES / INTERESES ── -->
     {((cv.habilidades && cv.habilidades.length > 0) || (cv.intereses && cv.intereses.length > 0)) && (
       <section>
-        <h2 class="font-sans font-bold text-sm tracking-widest uppercase" style="margin-bottom: 1rem;">Habilidades / Intereses</h2>
+        <h2 class="font-sans font-bold text-sm tracking-widest uppercase" style="margin-bottom: 1rem;">{labels.skills}</h2>
         <div style="height: 2px; background: #0A0A0A; margin-bottom: 3rem;"></div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
@@ -130,6 +134,11 @@ const portfolioPdf = lang === 'en'
 </div>
 
 <style>
+  .cv-content-inner {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
   @media (min-width: 768px) {
     .cv-content-inner {
       margin-left: 50%;

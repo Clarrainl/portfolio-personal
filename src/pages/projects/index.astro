@@ -1,7 +1,7 @@
 ---
-import BaseLayout from '../../../components/layout/BaseLayout.astro';
-import CategoryFilter from '../../../components/ui/CategoryFilter.tsx';
-import { getProjectsEn } from '../../../lib/sanity.js';
+import BaseLayout from '../../components/layout/BaseLayout.astro';
+import CategoryFilter from '../../components/ui/CategoryFilter.tsx';
+import { getProjectsEn } from '../../lib/sanity.js';
 
 const projects = await getProjectsEn();
 ---
@@ -11,13 +11,10 @@ const projects = await getProjectsEn();
   description="Full gallery of architecture, robotics and 3D printing projects."
 >
   <div class="pt-24">
-    <!-- Page Header -->
     <div class="px-6 lg:px-12 text-center md:pt-20" style="padding-top: 7rem; padding-bottom: 1rem;">
       <h1 class="font-sans md:text-6xl text-5xl font-light uppercase tracking-widest">Projects</h1>
       <div style="height: 1px; background: #555; margin: 2.5rem auto 0; width: 80%;"></div>
     </div>
-
-    <!-- Grid with filter -->
     <div class="w-full pt-3" style="padding-bottom: 3rem;">
       <CategoryFilter projects={projects} lang="en" client:load />
     </div>

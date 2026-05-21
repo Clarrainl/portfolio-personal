@@ -1,39 +1,26 @@
 ---
 import BaseLayout from '../components/layout/BaseLayout.astro';
 import CVContent from '../components/sections/CVContent.astro';
-import { getCV } from '../lib/sanity.js';
+import { getCVEn } from '../lib/sanity.js';
 
-const cv = await getCV();
+const cv = await getCVEn();
 ---
 
 <BaseLayout
   title="CV"
-  description="Curriculum Vitae — Arquitecto, Robótica, Impresión 3D."
+  description="Curriculum Vitae — Architect, Robotics, 3D Printing."
 >
   <div class="pt-24">
-    <!-- Page Header -->
     <div class="px-6 lg:px-12 text-center md:pt-20" style="padding-top: 7rem; padding-bottom: 2rem;">
       <h1 class="font-sans font-light uppercase tracking-widest text-6xl">CV</h1>
       <div style="height: 1px; background: #555; margin: 2.5rem auto 0; width: 80%;"></div>
     </div>
 
     {cv ? (
-      <CVContent cv={cv} lang="es" />
+      <CVContent cv={cv} lang="en" />
     ) : (
-      <div class="max-w-[1280px] mx-auto px-6 lg:px-12 py-24">
-        <div class="text-center mb-12">
-          <p class="text-[var(--color-text-secondary)] mb-6">
-            El CV se gestiona desde Sanity Studio.
-            Agrega un documento "CV" desde el panel de administración.
-          </p>
-          <a
-            href="/cv/CV_Carlos%20Larra%C3%ADn%20Lihn.pdf"
-            download
-            class="inline-flex items-center gap-3 border border-[var(--color-text)] text-sm font-medium px-6 py-3 hover:bg-[var(--color-text)] hover:text-white transition-all duration-200"
-          >
-            Descargar CV (PDF)
-          </a>
-        </div>
+      <div class="px-6 lg:px-12 py-24 text-center">
+        <p class="text-[var(--color-text-secondary)]">CV not available yet.</p>
       </div>
     )}
   </div>
