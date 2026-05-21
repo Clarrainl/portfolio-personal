@@ -21,122 +21,176 @@ function buildThumbnailUrl(ref: string): string {
   return buildImageUrl(ref, 600);
 }
 
+// Carousel constants
+const STEP_VW = 48;   // vw between item centers
+const SIDE_SCALE = 0.65;
+const SIDE_OPACITY = 0.45;
+
+function lerp(a: number, b: number, t: number) {
+  return a + (b - a) * Math.min(1, Math.max(0, t));
+}
+
+function slotStyle(relPos: number, dragPx: number, stepPx: number, withTransition: boolean) {
+  const frac = stepPx > 0 ? dragPx / stepPx : 0;
+  const eff = relPos + frac;           // effective (fractional) position from center
+  const abs = Math.abs(eff);
+
+  const scale   = abs <= 1 ? lerp(1, SIDE_SCALE, abs)
+                : abs <= 2 ? lerp(SIDE_SCALE, SIDE_SCALE * 0.55, abs - 1)
+                : 0;
+  const opacity = abs <= 1 ? lerp(1, SIDE_OPACITY, abs)
+                : abs <= 2 ? lerp(SIDE_OPACITY, 0, abs - 1)
+                : 0;
+  const zIndex  = Math.round(20 - abs * 4);
+  const tx      = relPos * stepPx + dragPx;
+
+  return {
+    position: 'absolute' as const,
+    left: '50%',
+    top: '50%',
+    width: '78vw',
+    maxWidth: '860px',
+    transform: `translate(-50%, -50%) translateX(${tx}px) scale(${scale.toFixed(4)})`,
+    opacity: opacity.toFixed(4),
+    zIndex,
+    transition: withTransition ? 'transform 0.35s ease, opacity 0.35s ease' : 'none',
+    cursor: abs < 0.5 ? 'default' : 'pointer',
+    pointerEvents: (opacity > 0.05 ? 'auto' : 'none') as 'auto' | 'none',
+  };
+}
+
 export default function MediaGallery({ items }: Props) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  const [dragOffset, setDragOffset] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [dragPx, setDragPx] = useState(0);
+  const [animating, setAnimating] = useState(false);
   const touchStartX = useRef<number | null>(null);
   const didDrag = useRef(false);
+  const stepPx = useRef(0);
 
-  // Bloquear scroll del body mientras el lightbox está abierto
   useEffect(() => {
-    if (lightboxIndex !== null) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
+    const update = () => { stepPx.current = window.innerWidth * STEP_VW / 100; };
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+
+  // Scroll lock
+  useEffect(() => {
+    document.body.style.overflow = lightboxIndex !== null ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [lightboxIndex]);
 
   if (!items || items.length === 0) return null;
 
-  const isImage = (item: GalleryItem) => item._type === 'image';
-  const isVideo = (item: GalleryItem) => item._type === 'file';
+  const isImg = (item: GalleryItem) => item._type === 'image';
+  const imgIdxList = items.map((_, i) => i).filter(i => isImg(items[i]));
 
-  function getAdjacentIndex(from: number, direction: 1 | -1): number | null {
-    let idx = from + direction;
-    while (idx >= 0 && idx < items.length && !isImage(items[idx])) idx += direction;
-    if (idx < 0 || idx >= items.length) return null;
-    return isImage(items[idx]) ? idx : null;
+  function imgPos(idx: number | null) {
+    return idx === null ? -1 : imgIdxList.indexOf(idx);
   }
 
   function openLightbox(idx: number) {
-    if (isImage(items[idx])) setLightboxIndex(idx);
+    if (isImg(items[idx])) setLightboxIndex(idx);
   }
 
   function closeLightbox() {
     setLightboxIndex(null);
-    setDragOffset(0);
-    setIsAnimating(false);
+    setDragPx(0);
+    setAnimating(false);
   }
 
-  // Navegar con animación de carrusel
-  function navigate(direction: 1 | -1) {
-    if (lightboxIndex === null || isAnimating) return;
-    const targetIdx = getAdjacentIndex(lightboxIndex, direction);
-    if (targetIdx === null) return;
+  function navigate(dir: 1 | -1) {
+    if (animating || lightboxIndex === null) return;
+    const cur = imgPos(lightboxIndex);
+    const next = cur + dir;
+    if (next < 0 || next >= imgIdxList.length) return;
 
-    setIsAnimating(true);
-    setDragOffset(-direction * window.innerWidth);
+    setAnimating(true);
+    setDragPx(-dir * stepPx.current);
 
     setTimeout(() => {
-      setLightboxIndex(targetIdx);
-      setDragOffset(0);
-      setTimeout(() => setIsAnimating(false), 30);
-    }, 300);
+      // Apagar animating en el mismo batch: React no aplica transición al reset
+      setAnimating(false);
+      setLightboxIndex(imgIdxList[next]);
+      setDragPx(0);
+    }, 320);
   }
 
-  // Touch handlers
-  function handleTouchStart(e: React.TouchEvent) {
-    if (isAnimating) return;
+  // Keyboard navigation
+  useEffect(() => {
+    if (lightboxIndex === null) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'ArrowLeft')  navigate(-1);
+      if (e.key === 'ArrowRight') navigate(1);
+      if (e.key === 'Escape')     closeLightbox();
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [lightboxIndex, animating]);
+
+  // Touch
+  function onTouchStart(e: React.TouchEvent) {
+    if (animating) return;
     touchStartX.current = e.touches[0].clientX;
     didDrag.current = false;
   }
 
-  function handleTouchMove(e: React.TouchEvent) {
-    if (touchStartX.current === null || isAnimating) return;
-    const delta = e.touches[0].clientX - touchStartX.current;
-    if (Math.abs(delta) > 5) didDrag.current = true;
-    setDragOffset(delta);
+  function onTouchMove(e: React.TouchEvent) {
+    if (touchStartX.current === null || animating) return;
+    const d = e.touches[0].clientX - touchStartX.current;
+    if (Math.abs(d) > 5) didDrag.current = true;
+    setDragPx(d);
   }
 
-  function handleTouchEnd(e: React.TouchEvent) {
-    if (touchStartX.current === null || isAnimating) return;
-    const delta = e.changedTouches[0].clientX - touchStartX.current;
+  function onTouchEnd(e: React.TouchEvent) {
+    if (touchStartX.current === null || animating) return;
+    const d = e.changedTouches[0].clientX - touchStartX.current;
     touchStartX.current = null;
 
-    if (Math.abs(delta) < 50) {
-      // snap back
-      setIsAnimating(true);
-      setDragOffset(0);
-      setTimeout(() => setIsAnimating(false), 300);
+    if (Math.abs(d) < 50) {
+      setAnimating(true);
+      setDragPx(0);
+      setTimeout(() => setAnimating(false), 350);
       return;
     }
 
-    const direction = delta < 0 ? 1 : -1; // 1 = siguiente, -1 = anterior
-    if (lightboxIndex === null) return;
-    const targetIdx = getAdjacentIndex(lightboxIndex, direction);
+    const dir: 1 | -1 = d < 0 ? 1 : -1;
+    const cur = imgPos(lightboxIndex);
+    const next = cur + dir;
 
-    if (targetIdx === null) {
-      // no hay imagen en esa dirección, volver atrás
-      setIsAnimating(true);
-      setDragOffset(0);
-      setTimeout(() => setIsAnimating(false), 300);
+    if (next < 0 || next >= imgIdxList.length) {
+      setAnimating(true);
+      setDragPx(0);
+      setTimeout(() => setAnimating(false), 350);
       return;
     }
 
-    // completar la animación hacia afuera
-    setIsAnimating(true);
-    setDragOffset(direction < 0 ? window.innerWidth : -window.innerWidth);
-
+    setAnimating(true);
+    setDragPx(-dir * stepPx.current);
     setTimeout(() => {
-      setLightboxIndex(targetIdx);
-      setDragOffset(0);
-      setTimeout(() => setIsAnimating(false), 30);
-    }, 280);
+      setAnimating(false);
+      setLightboxIndex(imgIdxList[next]);
+      setDragPx(0);
+    }, 300);
   }
 
-  function handleLightboxClick() {
+  function onBgClick() {
     if (didDrag.current) { didDrag.current = false; return; }
     closeLightbox();
   }
 
-  // Imágenes adyacentes para el carrusel
-  const prevIdx = lightboxIndex !== null ? getAdjacentIndex(lightboxIndex, -1) : null;
-  const nextIdx = lightboxIndex !== null ? getAdjacentIndex(lightboxIndex, 1) : null;
-  const currentItem = lightboxIndex !== null ? items[lightboxIndex] : null;
-  const prevItem = prevIdx !== null ? items[prevIdx] : null;
-  const nextItem = nextIdx !== null ? items[nextIdx] : null;
+  // Slots to render: relative positions -2 … +2
+  const curPos = imgPos(lightboxIndex);
+  function slotItem(offset: number) {
+    const p = curPos + offset;
+    if (p < 0 || p >= imgIdxList.length) return null;
+    return items[imgIdxList[p]];
+  }
+
+  const sp = stepPx.current || (typeof window !== 'undefined' ? window.innerWidth * STEP_VW / 100 : 300);
+  const showTransition = animating;
+  const hasPrev = curPos > 0;
+  const hasNext = curPos < imgIdxList.length - 1;
 
   return (
     <>
@@ -144,7 +198,7 @@ export default function MediaGallery({ items }: Props) {
       <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
         {items.map((item, idx) => (
           <div key={item._key} className="aspect-[4/3] overflow-hidden bg-[#F8F7F5]">
-            {isImage(item) && item.asset?._ref && (
+            {isImg(item) && item.asset?._ref && (
               <button
                 onClick={() => openLightbox(idx)}
                 className="w-full h-full cursor-zoom-in group"
@@ -158,14 +212,8 @@ export default function MediaGallery({ items }: Props) {
                 />
               </button>
             )}
-
-            {isVideo(item) && (item as any).asset?.url && (
-              <video
-                src={(item as any).asset.url}
-                controls
-                className="w-full h-full object-cover"
-                preload="metadata"
-              >
+            {item._type === 'file' && (item as any).asset?.url && (
+              <video src={(item as any).asset.url} controls className="w-full h-full object-cover" preload="metadata">
                 Tu navegador no soporta video.
               </video>
             )}
@@ -173,98 +221,104 @@ export default function MediaGallery({ items }: Props) {
         ))}
       </div>
 
-      {/* Lightbox */}
-      {lightboxIndex !== null && currentItem && isImage(currentItem) && (currentItem as any).asset?._ref && (
+      {/* Lightbox carousel */}
+      {lightboxIndex !== null && (
         <div
-          className="fixed inset-0 z-[100] bg-black/90 overflow-hidden"
-          onClick={handleLightboxClick}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-          style={{ touchAction: 'none' }}
+          className="fixed inset-0 z-[100] overflow-hidden"
+          style={{ background: 'rgba(0,0,0,0.93)', touchAction: 'none' }}
+          onClick={onBgClick}
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
         >
-          {/* Carrusel: 3 paneles en fila, se desplazan juntos */}
-          <div
-            style={{
-              display: 'flex',
-              width: '300vw',
-              height: '100%',
-              transform: `translateX(calc(-100vw + ${dragOffset}px))`,
-              transition: isAnimating ? 'transform 0.3s ease' : 'none',
-              willChange: 'transform',
-            }}
-          >
-            {/* Panel anterior */}
-            <div style={{ width: '100vw', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              {prevItem && (prevItem as any).asset?._ref && (
+          {/* Carousel slots -2 … +2 */}
+          {([-2, -1, 0, 1, 2] as const).map((relPos) => {
+            const item = slotItem(relPos);
+            if (!item || !(item as any).asset?._ref) return null;
+
+            const style = slotStyle(relPos, dragPx, sp, showTransition);
+
+            return (
+              <div
+                key={relPos}
+                style={style}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (relPos === -1) navigate(-1);
+                  else if (relPos === 1) navigate(1);
+                }}
+              >
                 <img
-                  src={buildImageUrl((prevItem as any).asset._ref)}
-                  alt={(prevItem as any).alt || ''}
-                  style={{ maxWidth: '90vw', maxHeight: '90vh', objectFit: 'contain', pointerEvents: 'none', userSelect: 'none' }}
+                  src={buildImageUrl((item as any).asset._ref)}
+                  alt={(item as any).alt || ''}
+                  style={{
+                    width: '100%',
+                    maxHeight: '82vh',
+                    objectFit: 'contain',
+                    display: 'block',
+                    userSelect: 'none',
+                    pointerEvents: 'none',
+                  }}
                   draggable={false}
                 />
-              )}
-            </div>
-
-            {/* Panel actual */}
-            <div style={{ width: '100vw', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <img
-                src={buildImageUrl((currentItem as any).asset._ref)}
-                alt={(currentItem as any).alt || ''}
-                style={{ maxWidth: '90vw', maxHeight: '90vh', objectFit: 'contain', pointerEvents: 'none', userSelect: 'none' }}
-                draggable={false}
-              />
-            </div>
-
-            {/* Panel siguiente */}
-            <div style={{ width: '100vw', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              {nextItem && (nextItem as any).asset?._ref && (
-                <img
-                  src={buildImageUrl((nextItem as any).asset._ref)}
-                  alt={(nextItem as any).alt || ''}
-                  style={{ maxWidth: '90vw', maxHeight: '90vh', objectFit: 'contain', pointerEvents: 'none', userSelect: 'none' }}
-                  draggable={false}
-                />
-              )}
-            </div>
-          </div>
+              </div>
+            );
+          })}
 
           {/* Close */}
           <button
             onClick={(e) => { e.stopPropagation(); closeLightbox(); }}
-            className="absolute top-4 right-4 text-white/70 hover:text-white text-2xl z-10 p-2"
+            style={{ position: 'absolute', top: '1rem', right: '1rem', zIndex: 50,
+              color: 'rgba(255,255,255,0.7)', fontSize: '1.5rem', padding: '0.5rem',
+              background: 'none', border: 'none', cursor: 'pointer', lineHeight: 1 }}
             aria-label="Cerrar"
           >
             ✕
           </button>
 
-          {/* Prev */}
-          {prevIdx !== null && (
+          {/* Arrow prev */}
+          {hasPrev && (
             <button
               onClick={(e) => { e.stopPropagation(); navigate(-1); }}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white text-3xl z-10 p-3"
+              style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)',
+                zIndex: 50, color: 'rgba(255,255,255,0.7)', fontSize: '2rem', padding: '0.75rem',
+                background: 'none', border: 'none', cursor: 'pointer', lineHeight: 1 }}
               aria-label="Anterior"
             >
               ←
             </button>
           )}
 
-          {/* Next */}
-          {nextIdx !== null && (
+          {/* Arrow next */}
+          {hasNext && (
             <button
               onClick={(e) => { e.stopPropagation(); navigate(1); }}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white text-3xl z-10 p-3"
+              style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)',
+                zIndex: 50, color: 'rgba(255,255,255,0.7)', fontSize: '2rem', padding: '0.75rem',
+                background: 'none', border: 'none', cursor: 'pointer', lineHeight: 1 }}
               aria-label="Siguiente"
             >
               →
             </button>
           )}
 
-          {/* Caption */}
-          {(currentItem as any).caption && (
-            <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/60 text-sm text-center px-8 z-10">
-              {(currentItem as any).caption}
-            </p>
+          {/* Dots indicator */}
+          {imgIdxList.length > 1 && (
+            <div style={{ position: 'absolute', bottom: '1.5rem', left: '50%',
+              transform: 'translateX(-50%)', display: 'flex', gap: '6px', zIndex: 50 }}>
+              {imgIdxList.map((_, i) => (
+                <div
+                  key={i}
+                  style={{
+                    width: i === curPos ? '18px' : '6px',
+                    height: '6px',
+                    borderRadius: '3px',
+                    background: i === curPos ? 'white' : 'rgba(255,255,255,0.35)',
+                    transition: 'all 0.3s ease',
+                  }}
+                />
+              ))}
+            </div>
           )}
         </div>
       )}
